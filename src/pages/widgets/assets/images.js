@@ -1,0 +1,3 @@
+export const img1='https://www.freepnglogos.com/uploads/linkedin-basic-round-social-logo-png-13.png'
+export const img2='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS0IJVDdxX2gc2vMkTw1xWDQyzkjhTQqX28SlyiSE3q_8H0dLo&s'
+export const img3='https://w7.pngwing.com/pngs/325/999/png-transparent-digital-marketing-mobile-advertising-interactive-advertising-marketing-angle-company-service-thumbnail.png'
