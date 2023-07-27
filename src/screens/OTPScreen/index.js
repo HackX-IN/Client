@@ -127,7 +127,7 @@ const OTPScreen = ({navigation,route}) => {
              console.log('Get Api Response:::',verify)
              if(verify){
               setIsLoading(false)
-              navigation.navigate('TabStack')
+              navigation.replace('TabStack')
             }
             else{
                   setIsLoading(false)
@@ -141,7 +141,7 @@ const OTPScreen = ({navigation,route}) => {
               console.log('Get Api Response:::',verify)
               if(verify){
                setIsLoading(false)
-               navigation.navigate('TabStack')
+               navigation.replace('TabStack')
              }
              else{
                    setIsLoading(false)
@@ -272,7 +272,7 @@ return(
 const styles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor:'#9E26BC',
+      backgroundColor:'#0371FF',
       width:'100%',
       alignSelf:'center',
       paddingHorizontal:'5%'

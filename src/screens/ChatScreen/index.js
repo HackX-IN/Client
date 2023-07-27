@@ -20,6 +20,7 @@ import {
     Composer,
     GiftedChat,
     SystemMessage,
+    InputToolbar,
   } from 'react-native-gifted-chat';
   import firestore from '@react-native-firebase/firestore';
   import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -363,6 +364,8 @@ return(
   <Text style={{fontSize:hp(2.6),color:'#fff',fontWeight:'700',marginLeft:wp(6)}}>{rcvr?.name}</Text>
  </View>
  <GiftedChat
+ placeholder="Type a message..."
+ placeholderTextColor="black"
         text={text}
         onSend={messages => onSend(messages)}
         messages={messages}
@@ -373,7 +376,16 @@ return(
           </TouchableOpacity>
         )}
        onInputTextChanged={setText}
-        user={{_id: user.id, name: user?.name}}
+      user={{_id: user.id, name: user?.name}}
+      renderInputToolbar={props => {
+        return (
+          <InputToolbar
+            {...props}
+           
+            textInputStyle={styles.inputText}
+          />
+        );
+      }}
       />
 </View>
 )
@@ -382,7 +394,7 @@ return(
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor:'#9E26BC',
+        backgroundColor:'#0371FF',
         width:'100%',
         alignSelf:'center',
       },
@@ -403,7 +415,10 @@ const styles = StyleSheet.create({
       width:'94%',
       alignSelf:'center',
       height:hp(10)
-    }
+    },
+    inputText: {
+      color: 'black', // Set your desired text color
+    },
   });
 
 export default ChatScreen;

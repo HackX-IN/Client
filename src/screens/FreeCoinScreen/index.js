@@ -1,5 +1,5 @@
 import React,{useState} from "react";
-import { View,Text,Image,StyleSheet,FlatList, TouchableOpacity,TextInput } from "react-native";
+import { View,Text,Image,StyleSheet,FlatList, TouchableOpacity,TextInput,Share, Alert } from "react-native";
 import ArrowLeft from "../../assets/ArrowLeft.png";
 import CountryPicker from 'react-native-country-picker-modal'
 import {
@@ -42,6 +42,26 @@ const livePhoto=[
 const FreeCoinScreen = ({navigation}) => {
 const [code,setCode] = useState('')
 
+const onShare = async () => {
+  try {
+    const result = await Share.share({
+      
+      message:
+          `If You Invite You Gays are both Get \n1000 Coins code is gaskcryi245`,
+    });
+    if (result.action === Share.sharedAction) {
+      if (result.activityType) {
+        // shared with activity type of result.activityType
+      } else {
+        // shared
+      }
+    } else if (result.action === Share.dismissedAction) {
+      // dismissed
+    }
+  } catch (error) {
+    Alert.alert(error.message);
+  }
+};
 
 return(
     <View style={styles.container}>
@@ -54,35 +74,37 @@ return(
        
          <View style={styles.bannerView1}>
           <View>
-          <Text style={{fontSize:hp(4),color:'#9E26BC',fontWeight:'500',marginLeft:wp(6)}}>Watch Video</Text>
-          <Text style={{fontSize:hp(2.2),color:'#9E26BC',fontWeight:'400',textAlign:'center'}}>Get Free Coins</Text>
+          <Text style={{fontSize:hp(4),color:'#0371FF',fontWeight:'500',marginLeft:wp(6)}}>Watch Video</Text>
+          <Text style={{fontSize:hp(2.2),color:'#0371FF',fontWeight:'400',textAlign:'center'}}>Get Free Coins</Text>
           </View>
+          <TouchableOpacity>
           <Image style={styles.videoPlay} source={playOutline}/>
+          </TouchableOpacity>
           </View>
         
           <View style={styles.bannerView2}>
             <View style={styles.codeView}>
               <TouchableOpacity style={{
                 height:hp(4.5),
-                backgroundColor:"#9E26BC",
+                backgroundColor:"#0371FF",
                 width:wp(45),
                 borderRadius:wp(3),
                 alignItems:'center',
                 flexDirection:'row',
                 justifyContent:"space-between",
                 paddingHorizontal:wp(5)
-              }}>
+              }} onPress={()=>onShare()}>
 <Text style={{fontSize:hp(2.5),color:'#fff',fontWeight:'500'}}>gaskcryi245</Text>
 <Image style={styles.leftArrow} source={require('../../assets/shareFill.png')}/>
               </TouchableOpacity>
             </View>
             <View style={styles.codeView1}>
-            <Text style={{fontSize:hp(2),color:'#9E26BC',fontWeight:'500',textAlign:'center'}}>{'If You Invite You Gays  are both Get \n1000 Coins'}</Text>
+            <Text style={{fontSize:hp(2),color:'#0371FF',fontWeight:'500',textAlign:'center'}}>{'If You Invite You both can Get \n1000 Coins'}</Text>
             </View>
             <View style={styles.codeView}>
             <TouchableOpacity style={{
                 height:hp(5),
-                backgroundColor:"#9E26BC",
+                backgroundColor:"#0371FF",
                 width:wp(45),
                 borderRadius:wp(3),
                 alignItems:'center',
@@ -105,7 +127,7 @@ return(
 <View style={styles.codeView}>
 <TouchableOpacity style={{
                 height:hp(5),
-                backgroundColor:"#9E26BC",
+                backgroundColor:"#0371FF",
                 width:wp(30),
                 borderRadius:wp(3),
                 alignItems:'center',
@@ -122,7 +144,7 @@ return(
 const styles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor:'#9E26BC',
+      backgroundColor:'#0371FF',
       width:'100%',
       alignSelf:'center',
       

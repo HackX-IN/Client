@@ -15,6 +15,8 @@ import {onGetStoreItemsApi,onBuyStoreItemsApi,onUpdateStoreApi,onGetUserApi} fro
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Loader} from '../../components/Loader.js'
 
+
+
 const livePhoto=[
   {
     id:1,
@@ -159,7 +161,7 @@ return(
             return(
               <View style={styles.signalListView}>
                 <View></View>
-                <Image style={styles.photoView} source={{uri:`https://live-stream-lovely.onrender.com/store/${item.storeUrl}`}}/>
+                <Image style={styles.photoView} source={{uri:`http://13.233.229.68:8008/store/${item.storeUrl}`}}/>
                 <View style={{width:'90%',justifyContent:'center'}}>
                 <Text style={{fontSize:hp(2),color:'#fff',marginLeft:wp(1),textAlign:"center"}}>{item.name}</Text>
                 
@@ -193,7 +195,7 @@ return(
 const styles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor:'#9E26BC',
+      backgroundColor:'#1877F2',
       width:'100%',
       alignSelf:'center',
       paddingHorizontal:'4%'

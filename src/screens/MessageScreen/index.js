@@ -107,36 +107,34 @@ const MessageScreen = ({navigation}) => {
     }, []);
 
   const renderItem = ({item,index}) => {
-    console.log("Get Room Details::1",userId,userData?.name)
-    return(
-      <TouchableOpacity style={{width:'100%',height:hp(10),flexDirection:'row',backgroundColor:'#fff',marginBottom:hp(1),paddingHorizontal:wp(5),alignItems:'center'}} onPress={()=>navigation.navigate('ChatScreen',{
-        rcvr: {id:item.id,receiver_id:userId==item.senderId?item.receiverId:item.senderId, name: userId==item.senderId?item.receiver_name:item.sender_name, profilePic:item.image},
-        rcvrpic: item.image,
-        user:{id:userId,name:userData?.name}
-      })}>
-        <Image style={{width:60,height:60,borderRadius:60}} source={{uri:item.image}} />
-
-        <View style={{width:'70%',marginLeft:wp(3)}}>
-          <View style={{flexDirection:'row',alignItems:"center",justifyContent:'space-between',width:'100%'}}>
-          <Text style={{fontSize:hp(2.3),color:'#9E26BC',fontWeight:'700'}}>{userId==item.senderId?item.receiver_name:item.sender_name}</Text>
-          <Text style={{fontSize:hp(1.6),color:'#9E26BC',fontWeight:'500'}}>{moment(item.date).format('hh:mm a')}</Text>
+    if(userId==item.senderId || userId==item.receiverId){
+      return(
+        <TouchableOpacity style={{width:'100%',height:hp(10),flexDirection:'row',backgroundColor:'#fff',marginBottom:hp(1),paddingHorizontal:wp(5),alignItems:'center'}} onPress={()=>navigation.navigate('ChatScreen',{
+          rcvr: {id:item.id,receiver_id:userId==item.senderId?item.receiverId:item.senderId, name: userId==item.senderId?item.receiver_name:item.sender_name, profilePic:item.image},
+          rcvrpic: item.image,
+          user:{id:userId,name:userData?.name}
+        })}>
+          <Image style={{width:60,height:60,borderRadius:60}} source={{uri:item.image}} />
+  
+          <View style={{width:'70%',marginLeft:wp(3)}}>
+            <View style={{flexDirection:'row',alignItems:"center",justifyContent:'space-between',width:'100%'}}>
+            <Text style={{fontSize:hp(2.3),color:'#0371FF',fontWeight:'700'}}>{userId==item.senderId?item.receiver_name:item.sender_name}</Text>
+            <Text style={{fontSize:hp(1.6),color:'#0371FF',fontWeight:'500'}}>{moment(item.date).format('hh:mm a')}</Text>
+            </View>
+            <Text style={{fontSize:hp(1.8),color:'#0371FF',fontWeight:'500'}}>{item.last_msg}</Text>
           </View>
-          <Text style={{fontSize:hp(1.8),color:'#9E26BC',fontWeight:'500'}}>{item.last_msg}</Text>
-        </View>
-      </TouchableOpacity>
-    )
+        </TouchableOpacity>
+      )
+    }
+ 
   }
 
 return(
     <View style={styles.container}>
       <View style={styles.headerView}>
          <View style={styles.bannerView}>
-         <Text style={{fontSize:hp(2.6),color:'#fff',fontWeight:'700'}}>Messages</Text>
-         <Image style={styles.leftArrow} source={downArrow}/>
-        </View>
-        <TouchableOpacity>
-        <Image style={styles.leftArrow} source={search}/>
-        </TouchableOpacity>
+         <Text style={{fontSize:hp(2.6),color:'#fff',justifyContent:'center',fontWeight:'700',textAlign:"center",marginLeft:wp(33),marginBottom:wp(2.5)}}>Messages</Text>
+         </View>
       </View>
 
       <FlatList 
@@ -151,21 +149,24 @@ return(
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor:'#9E26BC',
+        backgroundColor:'#0371FF',
         width:'100%',
         alignSelf:'center',
+        
       },
       headerView:{
         width:"100%",
-        height:hp(15),
+        height:hp(12),
         alignItems:'center',
         flexDirection:'row',
         justifyContent:'space-between',
         paddingHorizontal:'5%'
       },
       bannerView:{
+        justifyContent:"center",
         alignItems:'center',
-        flexDirection:'row'
+        flexDirection:'row',
+      
       },
       leftArrow:{
         width:wp(7),

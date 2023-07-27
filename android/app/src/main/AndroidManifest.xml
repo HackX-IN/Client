@@ -39,6 +39,6 @@
       </activity>
         <meta-data
             android:name="io.agora.appId"
-            android:value="4164dbe012a344c5939b894900f387d2" />
+            android:value="aa2b2d95b6fa4815bd6f1859c32c06fa" />
     </application>
 </manifest>

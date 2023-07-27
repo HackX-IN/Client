@@ -11,12 +11,17 @@ import {
 } from 'react-native';
 import { MenuProvider } from 'react-native-popup-menu';
 import Navigation from './src/navigation/Navigation';
+import { LogBox } from 'react-native';
+
+LogBox.ignoreAllLogs();
 
 function App() {
   return (
+    
     <MenuProvider>
     <Navigation />
     </MenuProvider>
+    
   );
 }
 

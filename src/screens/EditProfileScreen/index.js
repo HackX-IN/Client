@@ -73,7 +73,7 @@ const EditProfileScreen = ({navigation}) => {
                 genderOption[parseInt(response.data.data[0]?.gender)-1].selected=true
             }
            
-            setAbout(response.data.data?.about)
+            setAbout(response.data.data[0]?.about)
            
 
             
@@ -86,54 +86,45 @@ const EditProfileScreen = ({navigation}) => {
 
 
 
-      const onSubmitData = async() => {
-        try{
-            setIsLoading(true)
-            if(name==''){
-                setIsLoading(false)
-                alert('Please enter your full name.')
+      const onSubmitData = async () => {
+        try {
+          setIsLoading(true);
+          if (name === "") {
+            setIsLoading(false);
+            alert("Please enter your full name.");
+          } else if (date === "") {
+            setIsLoading(false);
+            alert("Please enter your date of birth.");
+          } else if (gender === "") {
+            setIsLoading(false);
+            alert("Please enter your gender.");
+          } else if (about === "") {
+            setIsLoading(false);
+            alert("Please enter about data.");
+          } else {
+            const raw = JSON.stringify({
+              name: name,
+              about: about,
+              dob: dateFormat,
+              gender: gender === "Male" ? 1 : 2,
+            });
+      
+            const response = await onUpdateProfileScreenApi(raw);
+            console.log("Get Response:::", response.data);
+            if (response.data.success) {
+              console.log("Get Response:::", response.data);
+              setIsLoading(false);
+              navigation.goBack();
+            } else {
+              setIsLoading(false);
+              alert(response.data.message);
             }
-            else if(date==''){
-                setIsLoading(false)
-                alert('Please enter your date of birth.')
-            }
-            else if(gender==''){
-                setIsLoading(false)
-                alert('Please enter your gender.')
-            }
-            else if(about==''){
-                setIsLoading(false)
-                alert('Please enter about data.')
-            }
-            else{
-    
-                var raw = JSON.stringify({
-                    name: name,
-                    about: about,
-                    dob: dateFormat,
-                    gender: gender=='Male'?1:2
-                  });
-    
-                const response = await onUpdateProfileScreenApi(raw)
-                console.log("Get Response:::",response.data)
-                if(response.data.success){
-                    console.log("Get Response:::",response.data)
-                    setIsLoading(false)
-                    navigation.goBack()
-                }
-                else{
-                    setIsLoading(false)
-                    alert(response.data.message)
-                }
-            }
-            
+          }
+        } catch (err) {
+          setIsLoading(false);
+          console.log("Error:", err);
         }
-        catch(err){
-            setIsLoading(false)
-            console.log('Error:',err)
-        }
-    }
-
+      };
 
     const onChangeDob = (value) => {
         setDate(moment(value).format('DD-MM-YYYY'));
@@ -255,7 +246,7 @@ return(
                 </View>
 
             <TouchableOpacity style={styles.loginButton} onPress={()=>onSubmitData() }>
-            <Text style={styles.loginText}>Next</Text>
+            <Text style={styles.loginText}>Save</Text>
             </TouchableOpacity>
               </KeyboardAwareScrollView>
               </View>
@@ -276,7 +267,7 @@ return(
 const styles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor:'#9E26BC',
+      backgroundColor:'#1877F2',
       width:'100%',
       alignSelf:'center',
       paddingHorizontal:'5%'

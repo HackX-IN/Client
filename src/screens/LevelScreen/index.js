@@ -71,12 +71,12 @@ return(
           data={livePhoto}
           renderItem={({item,index})=>{
             return(
-              <View style={[styles.listView,{backgroundColor:index%2!=0?"#fff":'#F4F5F9',borderBottomColor:'#9E26BC',borderBottomWidth:index%5!=0||index==0?0:4}]}>
+              <View style={[styles.listView,{backgroundColor:index%2!=0?"#fff":'#F4F5F9'}]}>
               <View style={styles.signalListView}>
                 <Image style={[styles.photoView,{marginRight:wp(-2)}]} source={sild}/>
                 <Image style={[styles.photoView]} source={LevelDigit}/>
                 </View>
-                <Text style={{fontSize:hp(2),color:'#9E26BC',fontWeight:'600',textAlign:'center',marginTop:hp(2)}}>{item.name}</Text>
+                <Text style={{fontSize:hp(2),color:'#0371FF',fontWeight:'600',textAlign:'center',marginTop:hp(2)}}>{item.name}</Text>
                 </View>
             )
           }}
@@ -88,7 +88,7 @@ return(
 const styles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor:'#9E26BC',
+      backgroundColor:'#0371FF',
       width:'100%',
       alignSelf:'center',
       paddingHorizontal:'4%'

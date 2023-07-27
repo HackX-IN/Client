@@ -17,7 +17,8 @@ const livePhoto=[
     id:1,
     coin:100000,
     duration:'10:50:43',
-    date:'14 feb,2023'
+    date:'14 feb,2023',
+    reward:15000
   },
   {
     id:2,
@@ -72,7 +73,7 @@ return(
               <View style={{
                 width:"100%",
                 backgroundColor:"#fff",
-                height:hp(20),
+                height:hp(22),
                 marginBottom:hp(2),
                 borderRadius:hp(1)
               }}>
@@ -86,7 +87,7 @@ return(
                   alignItems:'center',
                   justifyContent:'center',
                   height:hp(4),
-                  backgroundColor:'#9E26BC',
+                  backgroundColor:'#0371FF',
                   borderBottomLeftRadius:5,
                   borderBottomRightRadius:5
                 }}>
@@ -104,7 +105,9 @@ return(
                       width:'92%',
                       alignItems:'center',
                       justifyContent:'space-between',
-                      flexDirection:'row'
+                      flexDirection:'row',
+                      borderBottomColor:'#848484',
+                      borderBottomWidth:0.5
                   }}>
                    <Text style={{fontSize:hp(2.2),color:'#848484'}}>Coin Income</Text>
                    <Text style={{fontSize:hp(2.2),color:'#000',fontWeight:'700'}}>{item.coin}</Text>
@@ -114,10 +117,22 @@ return(
                       alignItems:'center',
                       justifyContent:'space-between',
                       flexDirection:'row',
-                      marginTop:hp(3)
+                      marginTop:hp(3),
+                      borderBottomColor:'#848484',
+                      borderBottomWidth:0.5
                   }}>
                    <Text style={{fontSize:hp(2.2),color:'#848484'}}>Live Duration</Text>
                    <Text style={{fontSize:hp(2.2),color:'#000',fontWeight:'700'}}>{item.duration}</Text>
+                  </View>
+                  <View style={{
+                      width:'92%',
+                      alignItems:'center',
+                      justifyContent:'space-between',
+                      flexDirection:'row',
+                      marginTop:hp(3)
+                  }}>
+                   <Text style={{fontSize:hp(2.2),color:'#848484'}}>Time Reward</Text>
+                   <Text style={{fontSize:hp(2.2),color:'#000',fontWeight:'700'}}>15000</Text>
                   </View>
                 </View>
               </View>
@@ -133,7 +148,7 @@ return(
 const styles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor:'#9E26BC',
+      backgroundColor:'#0371FF',
       width:'100%',
       alignSelf:'center',
     },

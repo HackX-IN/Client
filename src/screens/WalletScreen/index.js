@@ -163,7 +163,7 @@ const addComment = async(from,index,comment) => {
             <View style={{flexDirection:'row',alignItems:'center',justifyContent:'center'}}>
             <Image
                     style={styles.profileImage}
-                    source={{uri:`https://live-stream-lovely.onrender.com/profile_images/${item.userDetails[0]?.photo}`}} />
+                    source={{uri:`http://13.233.229.68:8008/profile_images/${item.userDetails[0]?.photo}`}} />
                     <View style={{height:hp(5),justifyContent:'space-between',marginLeft:wp(3)}}>
                     <Text style={styles.nameText}>{item.userDetails[0]?.name}</Text>
                     {/* <Text style={styles.timeText}>{item.userDetails[0].time}</Text> */}
@@ -216,7 +216,7 @@ const addComment = async(from,index,comment) => {
               <View style={{ width:'97%',alignSelf:'center',height:'100%' }}>
                   <Image
                     style={styles.imageBox}
-                    source={{uri:`https://live-stream-lovely.onrender.com/posts/${item.postUrl}`}} />
+                    source={{uri:`http://13.233.229.68:8008/posts/${item.postUrl}`}} />
                 </View>
            
             {/* )
@@ -298,7 +298,7 @@ const addComment = async(from,index,comment) => {
           }}>
  <Image
                     style={styles.profileCommentImage}
-                    source={{uri:`https://live-stream-lovely.onrender.com/profile_images/${item.userDetails[0]?.photo}`}}/>
+                    source={{uri:`http://13.233.229.68:8008/profile_images/${item.userDetails[0]?.photo}`}}/>
                     <TextInput 
                     value={item?.commentInput}
                     onChangeText={(text)=>postData[index].commentInput=text}
@@ -358,7 +358,7 @@ return(
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor:'#9E26BC',
+        backgroundColor:'#0371FF',
         width:'100%',
         alignSelf:'center',
         paddingHorizontal:'2%',
@@ -381,7 +381,7 @@ const styles = StyleSheet.create({
         borderRightWidth:1,
         borderRightColor:'#000'
       },
-      titleText:{fontSize:hp(2.2),color:'#9E26BC',fontWeight:'700'},
+      titleText:{fontSize:hp(2.2),color:'#0371FF',fontWeight:'700'},
       firstView:{
         width:'100%',
         height:hp(75),
