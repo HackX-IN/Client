@@ -582,6 +582,7 @@ export const onGetUserPendingRequestApi = async (id) => {
 
 export const onGetEaringCoinApi = async () => {
   const authToken = await AsyncStorage.getItem("token");
+
   const url = Api.baseUrl + `live/live-earning-history/${authToken}`;
 
   return new Promise((resolve, reject) => {
@@ -593,7 +594,7 @@ export const onGetEaringCoinApi = async () => {
         },
       })
       .then((res) => {
-        console.log("::res::", res);
+        console.log("::res::", res.data);
         return resolve(res);
       })
       .catch((err) => {
@@ -807,6 +808,61 @@ export const UserSearch = async (id) => {
 
 export const liveFilterApi = async (id) => {
   const url = Api.baseUrl + `live/getbycountry/${id}`;
+
+  return new Promise((resolve, reject) => {
+    axios
+      .get(url, {
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+      })
+      .then((res) => resolve(res))
+      .catch((err) => reject(err));
+  });
+};
+
+export const GetallLevels = async () => {
+  const authToken = await AsyncStorage.getItem("token");
+  const url = Api.baseUrl + `admin/getAll-levels`;
+
+  return new Promise((resolve, reject) => {
+    axios
+      .get(url)
+      .then((res) => resolve(res))
+      .catch((err) => reject(err));
+  });
+};
+
+export const GetPopularPost = async () => {
+  const authToken = await AsyncStorage.getItem("token");
+  const url = Api.baseUrl + `user/post/getPopular`;
+
+  return new Promise((resolve, reject) => {
+    axios
+      .get(url)
+      .then((res) => resolve(res))
+      .catch((err) => reject(err));
+  });
+};
+export const GetLatestPost = async () => {
+  const authToken = await AsyncStorage.getItem("token");
+  const url = Api.baseUrl + `user/post/getLatest`;
+
+  return new Promise((resolve, reject) => {
+    axios
+      .get(url)
+      .then((res) => {
+        console.log("::response for latest::", res);
+        return resolve(res);
+      })
+      .catch((err) => reject(err));
+  });
+};
+
+export const GetFollowingPost = async () => {
+  const id = await AsyncStorage.getItem("token");
+  const url = Api.baseUrl + `user/post/getfollowingPost/${id}`;
 
   return new Promise((resolve, reject) => {
     axios

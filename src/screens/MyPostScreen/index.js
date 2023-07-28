@@ -4,13 +4,18 @@ import {
   Text,
   TouchableOpacity,
   Image,
-  ImageBackground,
+  FlatList,
   StyleSheet,
   TextInput,
-  FlatList,
 } from "react-native";
-import ArrowLeft from "../../assets/ArrowLeft.png";
-import CountryPicker from "react-native-country-picker-modal";
+import {
+  onGetAllPostApi,
+  onAddCommentApi,
+  onAddLikeApi,
+  onRemoveLikeApi,
+} from "../../services/Api.js";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import CommentPopup from "../../components/CommentPopup.js";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -22,17 +27,6 @@ import send from "../../assets/send.png";
 import comments from "../../assets/comment.png";
 import like from "../../assets/like.png";
 import Swiper from "react-native-swiper";
-import {
-  onGetAllPostApi,
-  onAddCommentApi,
-  onAddLikeApi,
-  onRemoveLikeApi,
-  GetPopularPost,
-  GetLatestPost,
-  GetFollowingPost,
-} from "../../services/Api.js";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import CommentPopup from "../../components/CommentPopup.js";
 
 const postArray = [
   {
@@ -58,69 +52,43 @@ const postArray = [
   },
 ];
 
-const WalletScreen = ({ navigation }) => {
+const Index = ({ navigation }) => {
   const [commentModal, setCommentModal] = useState(false);
-  const [postData, setPostData] = useState([]);
-  const [userId, setUserId] = useState("");
+  const [postData, setPostData] = useState(postArray);
+  const [userId, setUserId] = useState("your_user_id_here");
   const [refresh, setRefresh] = useState(false);
   const [commentData, setCommentData] = useState([]);
-  const [popularPost, setPopularPost] = useState([]);
-  const [activeButton, setActiveButton] = useState("popular");
-  const [latest, setLatest] = useState([]);
-  const [following, setFollowing] = useState([]);
 
   useEffect(() => {
-    const subscribe = navigation.addListener("focus", () => {
-      getPostData();
-      getPopularPost();
-      getLatestPost();
-      getFollowingPost();
-    });
-  }, []);
+    const getUserData = async () => {
+      try {
+        const authToken = await AsyncStorage.getItem("token");
+        setUserId(authToken);
+        getPostData(authToken);
+      } catch (err) {
+        console.log("Error:", err);
+      }
+    };
 
-  const getPostData = async () => {
+    const unsubscribe = navigation.addListener("focus", () => {
+      getUserData();
+    });
+
+    return unsubscribe;
+  }, [navigation]);
+
+  const getPostData = async (userId) => {
     try {
-      const authToken = await AsyncStorage.getItem("token");
-      setUserId(authToken);
-      const getData = await onGetAllPostApi();
-      console.log("GEt Post Data:::", getData.data.data);
-      let arrayData = getData.data.data.reverse();
+      const getData = await onGetAllPostApi(userId);
+      console.log("Get Post Data:::", getData.data.data);
+      const currentUserPosts = getData.data.data.filter(
+        (post) => post.userId === userId
+      );
+      console.log(currentUserPosts);
+      let arrayData = currentUserPosts.reverse();
       setPostData(arrayData);
     } catch (err) {
       console.log("Error:", err);
-    }
-  };
-
-  const getPopularPost = async () => {
-    try {
-      setActiveButton("popular");
-      const response = await GetPopularPost();
-      console.log("Get Popular Post:::", response.data.data);
-      setPopularPost(response.data.data); // Update activeData with the fetched popular posts
-    } catch (error) {
-      console.log("Got Error", error);
-    }
-  };
-
-  const getLatestPost = async () => {
-    try {
-      setActiveButton("latest");
-      const response = await GetLatestPost();
-      console.log("Latest", response.data.data);
-      setLatest(response.data.data);
-    } catch (error) {
-      console.log("Got Error", error);
-    }
-  };
-
-  const getFollowingPost = async () => {
-    try {
-      setActiveButton("following");
-      const response = await GetFollowingPost();
-      console.log("Following", response.data.data);
-      setFollowing(response.data.data);
-    } catch (error) {
-      console.log("Got Error", error);
     }
   };
 
@@ -131,8 +99,7 @@ const WalletScreen = ({ navigation }) => {
         postId: from._id,
       });
       const response = await onAddLikeApi(raw);
-
-      getPostData();
+      getPostData(userId);
     } catch (err) {
       console.log("Error:", err);
     }
@@ -145,8 +112,7 @@ const WalletScreen = ({ navigation }) => {
         postId: from._id,
       });
       const response = await onRemoveLikeApi(raw);
-      // console.log("Get Response:", response.data);
-      getPostData();
+      getPostData(userId);
     } catch (err) {
       console.log("Error:", err);
     }
@@ -160,16 +126,13 @@ const WalletScreen = ({ navigation }) => {
         comment: comment,
       });
       const response = await onAddCommentApi(raw);
-      // console.log("Get Response:", response.data);
       setRefresh(!refresh);
-      postData[index].commentInput = "";
-
-      getPostData();
+      from.commentInput = "";
+      getPostData(userId);
     } catch (err) {
       console.log("Error:", err);
     }
   };
-
   const renderItem = ({ item, index }) => {
     console.log("Get Post ITem:::", item?.caption);
     if (item?.likes?.length > 0) {
@@ -191,6 +154,7 @@ const WalletScreen = ({ navigation }) => {
             justifyContent: "space-between",
             flexDirection: "row",
             alignSelf: "center",
+            marginTop: -15,
           }}
         >
           <View
@@ -200,14 +164,7 @@ const WalletScreen = ({ navigation }) => {
               justifyContent: "center",
             }}
           >
-            {item.users ? (
-              <Image
-                style={styles.profileImage}
-                source={{
-                  uri: `http://13.233.229.68:8008/profile_images/${item.users[0]?.photo}`,
-                }}
-              />
-            ) : item.userDetails ? (
+            {item.userDetails ? (
               <Image
                 style={styles.profileImage}
                 source={{
@@ -223,17 +180,13 @@ const WalletScreen = ({ navigation }) => {
                 marginBottom: wp(2),
               }}
             >
-              {item.users ? (
-                <Text style={styles.nameText}>{item.users[0]?.name}</Text>
-              ) : null}
-
               {item.userDetails ? (
                 <Text style={styles.nameText}>{item.userDetails[0]?.name}</Text>
               ) : null}
+
               <Text style={styles.nameText1} numberOfLines={2}>
                 {item?.caption}
               </Text>
-              {/* <Text style={styles.timeText}>{item.userDetails[0].time}</Text> */}
             </View>
           </View>
         </View>
@@ -381,49 +334,6 @@ const WalletScreen = ({ navigation }) => {
             </TouchableOpacity>
           </View>
         </View>
-
-        <View
-          style={{
-            backgroundColor: "#fff",
-            width: "100%",
-            height: hp(8),
-            borderRadius: 10,
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-between",
-            paddingHorizontal: wp(3),
-          }}
-        >
-          {item.userDetails ? (
-            <Image
-              style={styles.profileCommentImage}
-              source={{
-                uri: `http://13.233.229.68:8008/profile_images/${item.userDetails[0]?.photo}`,
-              }}
-            />
-          ) : null}
-          <TextInput
-            value={item?.commentInput}
-            onChangeText={(text) => (postData[index].commentInput = text)}
-            placeholder="Add a comment..."
-            placeholderTextColor={"rgba(0, 0, 0, 0.6)"}
-            style={{
-              width: "80%",
-              color: "rgba(0, 0, 0, 0.6)",
-              fontSize: hp(2),
-              marginLeft: wp(1),
-            }}
-          />
-          <TouchableOpacity
-            style={{ width: "10%" }}
-            onPress={() => addComment(item, index, item?.commentInput)}
-          >
-            <Image
-              style={[styles.sendIcon, { tintColor: "#848484" }]}
-              source={send}
-            />
-          </TouchableOpacity>
-        </View>
       </View>
     );
   };
@@ -433,42 +343,30 @@ const WalletScreen = ({ navigation }) => {
       <View style={styles.container}>
         <View style={styles.topButtonStyle}>
           <TouchableOpacity
-            style={[
-              styles.popularOption,
-              activeButton === "popular" && styles.activeButton,
-            ]}
-            onPress={getPopularPost}
+            style={{ marginLeft: 8, marginTop: 4 }}
+            onPress={() => navigation.goBack()}
           >
-            <Text style={styles.titleText}>Popular</Text>
+            <Image
+              source={require("../../assets/leftArrows.png")}
+              style={{ width: wp(5), height: wp(5) }}
+            />
           </TouchableOpacity>
-          <TouchableOpacity
-            style={[
-              styles.popularOption,
-              activeButton === "latest" && styles.activeButton,
-              (onPress = { getLatestPost }),
-            ]}
+          <Text
+            style={{
+              marginLeft: 12,
+              fontSize: 18,
+              fontWeight: "800",
+              marginBottom: -6,
+              color: "#fff",
+              textAlign: "center",
+            }}
           >
-            <Text style={styles.titleText}>Latest</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[
-              styles.popularOption,
-              activeButton === "following" && styles.activeButton,
-              { borderRightWidth: 0 },
-            ]}
-            onPress={getFollowingPost}
-          >
-            <Text style={styles.titleText}>Following</Text>
-          </TouchableOpacity>
+            My Posts
+          </Text>
         </View>
         <FlatList
-          data={
-            activeButton === "popular"
-              ? popularPost
-              : activeButton === "latest"
-              ? latest
-              : following
-          }
+          showsVerticalScrollIndicator={false}
+          data={postData}
           renderItem={renderItem}
           keyExtractor={(item, index) => index.toString()}
           contentContainerStyle={{ paddingBottom: hp(10) }}
@@ -499,16 +397,11 @@ const styles = StyleSheet.create({
     paddingVertical: "5%",
   },
   topButtonStyle: {
-    width: "100%",
-    height: hp(7),
-    backgroundColor: "#fff",
+    height: hp(6),
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center",
     borderRadius: 10,
-  },
-  activeButton: {
-    backgroundColor: "#fff",
+    marginTop: -15,
   },
   popularOption: {
     height: "100%",
@@ -574,4 +467,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default WalletScreen;
+export default Index;

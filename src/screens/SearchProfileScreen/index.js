@@ -13,6 +13,8 @@ import {
 } from "../../services/Api";
 import { countryCodes } from "../../components/CountryCodes";
 import CountryPicker from "react-native-country-picker-modal";
+import leftArrows from "../../assets/leftArrows.png";
+import firestore from "@react-native-firebase/firestore";
 
 const Index = ({ route, navigation }) => {
   const { userList } = route.params;
@@ -22,6 +24,7 @@ const Index = ({ route, navigation }) => {
   const [followed, setFollowed] = useState(false);
   const [followers, setFollowers] = useState(0);
   const [countryName, setCountryName] = useState("IN");
+  const db = firestore();
 
   useEffect(() => {
     getFollowers();
@@ -119,6 +122,30 @@ const Index = ({ route, navigation }) => {
     }
   };
 
+  const onChattingAdd = async () => {
+    db.collection("rooms")
+      .add({
+        date: new Date(),
+        image: userList?.photo,
+        receiverId: userList?._id,
+        receiver_name: userList?.name,
+        senderId: profileData?._id,
+        sender_name: profileData?.name,
+      })
+      .then((res) => {
+        navigation.navigate("ChatScreen", {
+          rcvr: {
+            id: res.id,
+            receiver_id: userList._id,
+            name: userList.name,
+            profilePic: userList?.photo,
+          },
+          rcvrpic: userList?.photo,
+          user: { id: profileData?._id, name: profileData?.name },
+        });
+      });
+  };
+
   useEffect(() => {
     if (userList?.country in countryCodes) {
       const country = countryCodes[userList?.country];
@@ -133,7 +160,26 @@ const Index = ({ route, navigation }) => {
 
   return (
     <View style={{ flex: 1, alignItems: "center", backgroundColor: "#F7F9F8" }}>
-      <View style={{ marginTop: widthPercentageToDP(10) }}>
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+          width: "90%",
+          marginTop: widthPercentageToDP(10),
+        }}
+      >
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Image
+            style={{
+              width: widthPercentageToDP(6),
+              height: heightPercentageToDP(2),
+              resizeMode: "contain",
+              tintColor: "#0371FF",
+            }}
+            source={leftArrows}
+          />
+        </TouchableOpacity>
         <Text
           style={{
             fontSize: 20,
@@ -144,16 +190,26 @@ const Index = ({ route, navigation }) => {
         >
           Profile
         </Text>
-        <View
-          style={{
-            borderBottomWidth: 1.3,
-            borderColor: "#0371FF",
-            height: 5,
-            width: widthPercentageToDP(100),
-            marginTop: widthPercentageToDP(2),
-          }}
-        />
+        <View>
+          <Image
+            style={{
+              width: widthPercentageToDP(6),
+              height: heightPercentageToDP(2),
+              resizeMode: "contain",
+              tintColor: "#000",
+            }}
+          />
+        </View>
       </View>
+      <View
+        style={{
+          borderBottomWidth: 1.3,
+          borderColor: "#0371FF",
+          height: 5,
+          width: widthPercentageToDP(100),
+          marginTop: widthPercentageToDP(2),
+        }}
+      />
 
       <View
         style={{
@@ -409,7 +465,7 @@ const Index = ({ route, navigation }) => {
             borderWidth: 1,
             borderColor: "#0371FF",
           }}
-          onPress={() => navigation.navigate("MessageScreen")}
+          onPress={onChattingAdd}
         >
           <Text
             style={{

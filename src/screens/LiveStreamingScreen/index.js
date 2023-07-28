@@ -385,7 +385,7 @@ const LiveStreamingScreen = ({ navigation, route, props }) => {
       setCallingList(response.data.data);
       if (response.data.data.length > 0) {
         response.data.data.map((item, index) => {
-          if (item.user[0]?._id == userData?._id) {
+          if (item.user[0]?._id == UserData?._id) {
             setJoinUser(true);
           }
         });
@@ -399,9 +399,6 @@ const LiveStreamingScreen = ({ navigation, route, props }) => {
     try {
       const response = await onGetUserApi();
       const userData = response.data.data[0]; // Access the user data from the response
-
-      console.log("Get Response ####", userData);
-      console.log("This is the name", userData.name);
       setUserData(userData);
       // Rest of your code...
     } catch (err) {
@@ -411,28 +408,21 @@ const LiveStreamingScreen = ({ navigation, route, props }) => {
 
   const onSendCoin = async () => {
     setGiftView(false);
-    if (coinSendId != "") {
-      const authToken = await AsyncStorage.getItem("token");
-
-      var raw = JSON.stringify({
-        sender: authToken,
-        receiver: UserData?._id,
-        coin: selectCoin * count,
-      });
-      const response = await SendGiftApi(raw);
-      console.log("Response Live Streaming", response.data);
-      setGiftView(false);
-    } else {
-      Alert.alert("", "Please select user first.");
-    }
+    const authToken = await AsyncStorage.getItem("token");
+    console.log("Response Lve Streaming", route.params.receiverId);
+    var raw = JSON.stringify({
+      sender: authToken,
+      receiver: route.params.receiverId,
+      coin: selectCoin * count,
+    });
+    const response = await SendGiftApi(raw);
+    console.log("Response Live Streaming", response.data);
   };
 
   useEffect(() => {
     setIsHost(route.params.isHost);
     init();
-    setInterval(() => {
-      onGetUserData();
-    }, 1000);
+    onGetUserData();
 
     setArrayCoin(giftArray);
     setArrayCount(countArray);
@@ -450,7 +440,7 @@ const LiveStreamingScreen = ({ navigation, route, props }) => {
         });
         console.log("Response Lve Streaming", raw);
         const response = await onAddLiveStreamingApi(raw);
-        console.log("Response Lve Streaming", response.data.data._id);
+
         setRefresh(!refresh);
         setLiveId(response.data.data._id);
 
@@ -464,8 +454,9 @@ const LiveStreamingScreen = ({ navigation, route, props }) => {
   };
 
   const followUser = async () => {
+    console.log(UserData?.name);
     const followFrom = UserData?._id;
-    const followTo = liveId;
+    const followTo = route.params.receiverId;
 
     if (followFrom === followTo) {
       // User cannot follow themselves
@@ -526,7 +517,7 @@ const LiveStreamingScreen = ({ navigation, route, props }) => {
           appID={KeyCenter.appID}
           appSign={KeyCenter.appSign}
           userID="You"
-          userName="You"
+          userName={route.params.isHost ? "Host" : "You"}
           liveID="testLiveId"
           config={{
             ...(route.params.isHost === true
@@ -558,11 +549,11 @@ const LiveStreamingScreen = ({ navigation, route, props }) => {
             },
             onWindowMinimized: () => {
               console.log("[Demo]HostPage onWindowMinimized");
-              navigation.navigate("HomeScreen");
+              navigation.navigate("LiveScreen");
             },
             onWindowMaximized: () => {
               console.log("[Demo]HostPage onWindowMaximized");
-              navigation.navigate("HomeScreen", {
+              navigation.navigate("LiveScreen", {
                 liveID: "testLiveId",
               });
             },
@@ -573,7 +564,7 @@ const LiveStreamingScreen = ({ navigation, route, props }) => {
         {!isHost && (
           <TouchableOpacity
             style={{ position: "absolute", top: 48, right: 66 }}
-            onPress={followUser()}
+            onPress={followUser}
           >
             <Image
               source={plus}

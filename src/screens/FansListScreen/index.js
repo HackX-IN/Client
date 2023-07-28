@@ -9,15 +9,44 @@ import {
 } from "react-native";
 import leftArrows from "../../assets/leftArrows.png";
 import rankingUser from "../../assets/rankingUser.png";
+import LevelDigit from "../../assets/LevelDigit.png";
+import sild from "../../assets/sild.png";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "../../components/Pixel/index";
 import { getFollowersApi, getFollowingApi } from "../../services/Api";
+import { countryCodes } from "../../components/CountryCodes";
+import CountryPicker from "react-native-country-picker-modal";
 
 const FanListScreen = ({ navigation, route }) => {
   const [followers, setFollowers] = useState([]);
   const [following, setFollowing] = useState([]); // Changed from Following to following
+  const [countryName, setCountryName] = useState("IN");
+
+  useEffect(() => {
+    if (followers?.country in countryCodes) {
+      const country = countryCodes[followers?.country];
+      console.log(
+        `Country Code ${followers?.country} corresponds to ${country}`
+      );
+      setCountryName(country);
+    } else {
+      console.log("Invalid country code");
+    }
+  }, [followers]);
+
+  useEffect(() => {
+    if (following?.country in countryCodes) {
+      const country = countryCodes[following?.country];
+      console.log(
+        `Country Code ${following?.country} corresponds to ${country}`
+      );
+      setCountryName(country);
+    } else {
+      console.log("Invalid country code");
+    }
+  }, [following]);
 
   const { name } = route.params;
 
@@ -75,7 +104,14 @@ const FanListScreen = ({ navigation, route }) => {
           style={styles.rowImage}
         />
         <Text style={styles.rowText}>{displayName}</Text>
-        <Text style={styles.rowText1}>{item.score}</Text>
+        <View style={styles.signalListView}>
+          <Image
+            style={[styles.photoView, { marginRight: wp(-2) }]}
+            source={sild}
+          />
+          <Image style={[styles.photoView]} source={LevelDigit} />
+        </View>
+        <CountryPicker countryCode={countryName} visible={false} />
       </View>
     );
   };
@@ -160,6 +196,16 @@ const styles = StyleSheet.create({
     height: hp(10),
     alignItems: "center",
     flexDirection: "row",
+  },
+  signalListView: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginLeft: wp(0.5),
+  },
+  photoView: {
+    width: wp(7),
+    height: hp(5),
+    resizeMode: "contain",
   },
 });
 

@@ -93,7 +93,7 @@ const SendRanking = ({ navigation }) => {
             style={styles.leftArrow}
             source={require("../../assets/filter.png")}
           />
-          <View
+            <View
             style={{
               backgroundColor: "#1877F2",
               color: "#1877F2",

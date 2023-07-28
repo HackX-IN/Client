@@ -114,7 +114,7 @@ return(
           <TouchableOpacity onPress={()=>navigation.navigate('CallHistory')} style={{
             alignItems:"center"
           }}>
-          <Text style={{fontSize:hp(2.2),color:'#fff',fontWeight:'500',height:hp(7),marginTop:hp(3)}}>Income Coin</Text>
+          <Text style={{fontSize:hp(2.2),color:'#fff',fontWeight:'500',height:hp(7),marginTop:hp(3)}}>Receive Coin</Text>
           <Text style={{fontSize:hp(4),color:'#fff',fontWeight:'500',height:hp(8)}}>{profileData?.LiveEarningcoin}</Text>
           </TouchableOpacity>
          </View>

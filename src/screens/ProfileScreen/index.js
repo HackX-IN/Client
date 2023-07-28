@@ -194,6 +194,7 @@ const ProfileScreen = ({ navigation }) => {
           width: 300,
           height: 300,
           cropping: true,
+          cropperCircleOverlay: true,
         })
           .then((image) => {
             console.log(image);
@@ -233,6 +234,7 @@ const ProfileScreen = ({ navigation }) => {
     if (from == "Wallet") {
       navigation.navigate("DiamondScreen");
     } else if (from == "Post") {
+      navigation.navigate("MyPost");
     } else if (from == "Game") {
       navigation.navigate("GameScreen");
     } else if (from == "Level") {
@@ -368,7 +370,7 @@ const ProfileScreen = ({ navigation }) => {
             />
           )}
         </TouchableOpacity>
-        <View style={{ width: "50%", marginLeft: 10 }}>
+        <View style={{ width: "50%", marginLeft: wp(7) }}>
           <Text style={{ fontSize: hp(2.6), color: "#fff", fontWeight: "700" }}>
             {profileData?.name}
           </Text>

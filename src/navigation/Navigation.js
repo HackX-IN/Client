@@ -36,6 +36,7 @@ import FanListScreen from "../screens/FansListScreen";
 import LiveCoinScreen from "../screens/LiveCoinScreen";
 import SearchProfile from "../screens/SearchProfileScreen";
 import SplashScreen from "../screens/SplashScreen";
+import MyPost from "../screens/MyPostScreen";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -278,6 +279,11 @@ const navigation = () => {
         <Stack.Screen
           name="SearchProfile"
           component={SearchProfile}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="MyPost"
+          component={MyPost}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

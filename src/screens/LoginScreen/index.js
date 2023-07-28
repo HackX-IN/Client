@@ -101,7 +101,7 @@ const LoginScreen = ({ navigation }) => {
         <View style={styles.firstView}>
           <TouchableOpacity
             style={styles.leftArrowButton}
-            onPress={() => navigation.replace("OnBoardingScreen")}
+            onPress={() => navigation.replace('OnBoardingScreen')}
           >
             <Image source={ArrowLeft} style={styles.arrowImage} />
           </TouchableOpacity>

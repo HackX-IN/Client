@@ -125,10 +125,16 @@ const HomeScreen = ({ navigation, route }) => {
     try {
       const response = await onGetLiveStreamingApi();
       let data = response.data.data;
+      data.map((item,index)=>{
+        
+        console.log("Get Data:::",item._id)
+      })
+      
       setLiveData(data.reverse());
     } catch (err) {
       console.log("Error:", err);
     }
+    
   };
 
   const addWatchList = async (item) => {
@@ -392,6 +398,7 @@ const HomeScreen = ({ navigation, route }) => {
               onPress={() =>
                 navigation.navigate("SearchProfile", { userList: userList })
               }
+              style={{backgroundColor:"#F0F0f0",marginTop:hp(1)}}
             >
               <View style={styles.userContainer}>
                 <Image
@@ -401,15 +408,14 @@ const HomeScreen = ({ navigation, route }) => {
                   style={{
                     width: wp(12),
                     height: wp(12),
-                    borderRadius: wp(5),
+                    borderRadius: wp(12),
                     marginRight: wp(1),
-                    resizeMode: "contain",
                   }}
                 />
                 <Text
                   style={{
                     color: "black",
-                    fontSize: hp(2),
+                    fontSize: hp(2.5),
                     fontWeight: "700",
                     marginBottom: 5,
                   }}
@@ -421,8 +427,8 @@ const HomeScreen = ({ navigation, route }) => {
                     <Image
                       source={require("../../assets/sild.png")}
                       style={{
-                        width: 18,
-                        height: 18,
+                        width: 20,
+                        height: 20,
                         marginTop: wp(0.5),
                         marginLeft: -wp(0.5),
                       }}
@@ -430,7 +436,7 @@ const HomeScreen = ({ navigation, route }) => {
                     <Image
                       style={{
                         width: 23,
-                        height: 18,
+                        height: 20,
                         resizeMode: "contain",
                         marginTop: wp(0.5),
                         marginLeft: -3,
@@ -690,8 +696,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
   },
   userContainer: {
-    width: wp(50),
-    height: hp(15),
+    width: wp(53),
+    height: hp(9),
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",

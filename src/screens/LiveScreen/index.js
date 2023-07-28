@@ -37,45 +37,47 @@ const LiveScreen = ({ navigation, route }) => {
     onGetLiveData();
   }, [isFocused]);
 
-  useEffect(() => {
-    // Remove live streaming entries for the current user when the screen is focused
-    if (isFocused) {
-      removeLiveStreaming();
-    }
-  }, [isFocused]);
+  // useEffect(() => {
+  //   // Remove live streaming entries for the current user when the screen is focused
+  //   if (isFocused) {
+  //     removeLiveStreaming();
+  //   }
+  // }, [isFocused]);
 
   const onGetLiveData = async () => {
     try {
+      const authToken = await AsyncStorage.getItem("token");
       const response = await onGetLiveStreamingApi();
       let data = response.data.data;
+      response.data.data.forEach(async (item) => {
+        console.log("Get Darta::",item?.userId ,authToken)
+        if (item?.userId === authToken) {
+          const deletePromise = await onDeleteLiveStreamingApi(item?._id);
+          console.log("Get Darta::",deletePromise)
+        }
+      });
 
-      setLiveData(data.reverse());
     } catch (err) {
       console.log("Error:", err);
     }
   };
 
-  const removeLiveStreaming = async () => {
-    try {
-      const authToken = await AsyncStorage.getItem("token");
-      const deletePromises = [];
+  // const removeLiveStreaming = async () => {
+  //   try {
+     
+  //     const deletePromises = [];
 
-      liveData.forEach(async (item) => {
-        if (item?.userId === authToken) {
-          const deletePromise = onDeleteLiveStreamingApi(item?._id);
-          deletePromises.push(deletePromise);
-        }
-      });
+    
 
-      // Wait for all deletePromises to complete before continuing
-      await Promise.all(deletePromises);
+  //     // Wait for all deletePromises to complete before continuing
+  //     await Promise.all(deletePromises);
 
-      // Fetch the updated live data after removing the entries
-      onGetLiveData();
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  //     // Fetch the updated live data after removing the entries
+  //     onGetLiveData();
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
 
   return (
     <View style={styles.container}>

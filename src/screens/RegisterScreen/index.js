@@ -211,6 +211,7 @@ const RegisterScreen = ({ navigation }) => {
           width: 300,
           height: 400,
           cropping: true,
+          cropperCircleOverlay: true,
         })
           .then((image) => {
             console.log(image);
