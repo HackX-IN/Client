@@ -153,6 +153,7 @@ const AddPostScreen = ({ navigation }) => {
             New Post
           </Text>
         </View>
+
         <View style={styles.listView}>
           <View style={styles.loginButton2}>
             <TextInput
@@ -277,6 +278,14 @@ const styles = StyleSheet.create({
     fontWeight: "500",
     color: "#fff",
     marginLeft: wp(5),
+  },
+  loginButton2: {
+    width: "90%",
+    height: hp(15),
+    backgroundColor: "#0371FF",
+    borderRadius: hp(2),
+    alignSelf: "center",
+    marginVertical: hp(2),
   },
   loginButton2: {
     width: "90%",

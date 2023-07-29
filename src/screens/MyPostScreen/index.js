@@ -52,7 +52,7 @@ const postArray = [
   },
 ];
 
-const Index = ({ navigation }) => {
+const MyPostScreen = ({ navigation }) => {
   const [commentModal, setCommentModal] = useState(false);
   const [postData, setPostData] = useState(postArray);
   const [userId, setUserId] = useState("your_user_id_here");
@@ -467,4 +467,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Index;
+export default MyPostScreen;

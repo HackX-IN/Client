@@ -123,27 +123,26 @@ const Index = ({ route, navigation }) => {
   };
 
   const onChattingAdd = async () => {
-    db.collection("rooms")
-      .add({
-        date: new Date(),
-        image: userList?.photo,
-        receiverId: userList?._id,
-        receiver_name: userList?.name,
-        senderId: profileData?._id,
-        sender_name: profileData?.name,
-      })
-      .then((res) => {
-        navigation.navigate("ChatScreen", {
-          rcvr: {
-            id: res.id,
-            receiver_id: userList._id,
-            name: userList.name,
-            profilePic: userList?.photo,
-          },
-          rcvrpic: userList?.photo,
-          user: { id: profileData?._id, name: profileData?.name },
-        });
+    db.collection("rooms").add({
+      date: new Date(),
+      image: userList?.photo,
+      receiverId: userList?._id,
+      receiver_name: userList?.name,
+      senderId: profileData?._id,
+      sender_name: profileData?.name,
+    }).then((res)=>{
+      navigation.navigate("ChatScreen", {
+        rcvr: {
+          id: res.id,
+          receiver_id: userList._id,
+          name: userList.name,
+          profilePic: userList?.photo,
+        },
+        rcvrpic: userList?.photo,
+        user: { id: profileData?._id, name: profileData?.name },
       });
+    })
+    
   };
 
   useEffect(() => {

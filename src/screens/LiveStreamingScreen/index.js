@@ -408,21 +408,22 @@ const LiveStreamingScreen = ({ navigation, route, props }) => {
 
   const onSendCoin = async () => {
     setGiftView(false);
-    const authToken = await AsyncStorage.getItem("token");
-    console.log("Response Lve Streaming", route.params.receiverId);
-    var raw = JSON.stringify({
-      sender: authToken,
-      receiver: route.params.receiverId,
-      coin: selectCoin * count,
-    });
-    const response = await SendGiftApi(raw);
-    console.log("Response Live Streaming", response.data);
+      const authToken = await AsyncStorage.getItem("token");
+
+      var raw = JSON.stringify({
+        sender: authToken,
+        receiver: route.params.receiverId,
+        coin: selectCoin * count,
+      });
+      const response = await SendGiftApi(raw);
+      console.log("Response Live Streaming", response.data);
+
   };
 
   useEffect(() => {
     setIsHost(route.params.isHost);
     init();
-    onGetUserData();
+      onGetUserData();
 
     setArrayCoin(giftArray);
     setArrayCount(countArray);
@@ -456,7 +457,7 @@ const LiveStreamingScreen = ({ navigation, route, props }) => {
   const followUser = async () => {
     console.log(UserData?.name);
     const followFrom = UserData?._id;
-    const followTo = route.params.receiverId;
+    const followTo =  route.params.receiverId;
 
     if (followFrom === followTo) {
       // User cannot follow themselves

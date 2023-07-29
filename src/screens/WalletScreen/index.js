@@ -445,11 +445,12 @@ const WalletScreen = ({ navigation }) => {
             style={[
               styles.popularOption,
               activeButton === "latest" && styles.activeButton,
-              (onPress = { getLatestPost }),
             ]}
+            onPress={()=>getLatestPost()}
           >
             <Text style={styles.titleText}>Latest</Text>
           </TouchableOpacity>
+          
           <TouchableOpacity
             style={[
               styles.popularOption,

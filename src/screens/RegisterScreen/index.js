@@ -101,30 +101,30 @@ const RegisterScreen = ({ navigation }) => {
         const response = await RegistrationScreenApi(raw);
         console.log("Get Response:::", raw, date);
         if (response.data.success) {
-          // await firestore()
-          //   .collection("users")
-          //   .doc(response.data.data._id)
-          //   .set({
-          //     name: name,
-          //     email: email,
-          //     mobile: mobile,
-          //     about: about,
-          //     dob: dateFormat,
-          //     gender: gender == "Male",
-          //     userId: response.data.data._id,
-          //     country: countryCode,
-          // })
-          // .then((res) => {
-          //   console.log("Get Firebase Response::", res);
-          // });
+          await firestore()
+            .collection("users")
+            .doc(response.data.data._id)
+            .set({
+              name: name,
+              email: email,
+              mobile: mobile,
+              about: about,
+              dob: dateFormat,
+              gender: gender == "Male",
+              userId: response.data.data._id,
+              country: countryCode,
+          })
+          .then((res) => {
+            console.log("Get Firebase Response::", res);
+          });
 
-          // var raw1 = JSON.stringify({
-          //     otp: 1122,
-          //     mobile: mobile
-          //   });
-          // const response1 = await SendOtpScreenApi(raw1,mobile)
-          // console.log("Get Response:::",response1.data)
-          // if(response1.data.status){
+          var raw1 = JSON.stringify({
+              otp: 1122,
+              mobile: mobile
+            });
+          const response1 = await SendOtpScreenApi(raw1,mobile)
+          console.log("Get Response:::",response1.data)
+          if(response1.data.status){
 
           const confirmation = await auth().signInWithPhoneNumber(
             `${countryCode + mobile}`
@@ -142,11 +142,11 @@ const RegisterScreen = ({ navigation }) => {
             console.log("error");
           }
 
-          // }
-          // else{
-          //     setIsLoading(false)
-          //     alert(response1.data.message)
-          // }
+          }
+          else{
+              setIsLoading(false)
+              alert(response1.data.message)
+          }
         } else {
           setIsLoading(false);
           alert(response.data.message);
@@ -253,7 +253,7 @@ const RegisterScreen = ({ navigation }) => {
         <View style={styles.firstView}>
           <TouchableOpacity
             style={styles.leftArrowButton}
-            onPress={() => navigation.replace("OnBoardingScreen")}
+            onPress={() => navigation.replace('OnBoardingScreen')}
           >
             <Image source={ArrowLeft} style={styles.arrowImage} />
           </TouchableOpacity>
@@ -268,8 +268,8 @@ const RegisterScreen = ({ navigation }) => {
                 borderRadius: 100,
                 backgroundColor: profileImage != "" ? "#1877F2" : "#fff",
                 alignSelf: "center",
-                justifyContent: "center",
-                alignItems: "center",
+                justifyContent:'center',
+                alignItems:'center'
               }}
               onPress={() => selectFile()}
             >
