@@ -229,9 +229,6 @@ const MyPostScreen = ({ navigation }) => {
           loop={false}
           showsButtons={false}
         >
-          {/* {item.images.map((item1,index)=>{
-            return( */}
-
           <View style={{ width: "97%", alignSelf: "center", height: "100%" }}>
             <Image
               style={styles.imageBox}
@@ -240,10 +237,6 @@ const MyPostScreen = ({ navigation }) => {
               }}
             />
           </View>
-
-          {/* )
-            
-          })} */}
         </Swiper>
 
         <View

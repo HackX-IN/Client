@@ -876,3 +876,45 @@ export const GetFollowingPost = async () => {
       .catch((err) => reject(err));
   });
 };
+export const GetTopSender = async () => {
+  const authToken = await AsyncStorage.getItem("token");
+  const url = Api.baseUrl + `live/getTopSender`;
+
+  return new Promise((resolve, reject) => {
+    axios
+      .get(url)
+      .then((res) => {
+        console.log("::response for latest::", res);
+        return resolve(res);
+      })
+      .catch((err) => reject(err));
+  });
+};
+export const GetTopReciever = async () => {
+  const authToken = await AsyncStorage.getItem("token");
+  const url = Api.baseUrl + `live/getTopReciver`;
+
+  return new Promise((resolve, reject) => {
+    axios
+      .get(url)
+      .then((res) => {
+        console.log("::response for latest::", res);
+        return resolve(res);
+      })
+      .catch((err) => reject(err));
+  });
+};
+export const GetAllranking = async () => {
+  const authToken = await AsyncStorage.getItem("token");
+  const url = Api.baseUrl + `live/gettopsendrecive`;
+
+  return new Promise((resolve, reject) => {
+    axios
+      .get(url)
+      .then((res) => {
+        console.log("::response for latest::", res);
+        return resolve(res);
+      })
+      .catch((err) => reject(err));
+  });
+};

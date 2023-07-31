@@ -96,7 +96,7 @@ const WalletScreen = ({ navigation }) => {
       setActiveButton("popular");
       const response = await GetPopularPost();
       console.log("Get Popular Post:::", response.data.data);
-      setPopularPost(response.data.data); // Update activeData with the fetched popular posts
+      setPopularPost(response.data.data);
     } catch (error) {
       console.log("Got Error", error);
     }
@@ -171,7 +171,7 @@ const WalletScreen = ({ navigation }) => {
   };
 
   const renderItem = ({ item, index }) => {
-    console.log("Get Post ITem:::", item?.caption);
+    console.log("Get Post ITem:::", item?.postUrl);
     if (item?.likes?.length > 0) {
       item?.likes?.map((item1, index1) => {
         // console.log("Get Like:::", item1);
@@ -233,7 +233,6 @@ const WalletScreen = ({ navigation }) => {
               <Text style={styles.nameText1} numberOfLines={2}>
                 {item?.caption}
               </Text>
-              {/* <Text style={styles.timeText}>{item.userDetails[0].time}</Text> */}
             </View>
           </View>
         </View>
@@ -276,21 +275,17 @@ const WalletScreen = ({ navigation }) => {
           loop={false}
           showsButtons={false}
         >
-          {/* {item.images.map((item1,index)=>{
-            return( */}
-
           <View style={{ width: "97%", alignSelf: "center", height: "100%" }}>
-            <Image
-              style={styles.imageBox}
-              source={{
-                uri: `http://13.233.229.68:8008/posts/${item.postUrl}`,
-              }}
-            />
+            {/**
+            {item.postUrl ? (
+              <Image
+                style={styles.imageBox}
+                source={{
+                  uri: `http://13.233.229.68:8008/posts/${item?.postUrl}`,
+                }}
+              />
+            ) : null}**/}
           </View>
-
-          {/* )
-            
-          })} */}
         </Swiper>
 
         <View
@@ -401,6 +396,13 @@ const WalletScreen = ({ navigation }) => {
                 uri: `http://13.233.229.68:8008/profile_images/${item.userDetails[0]?.photo}`,
               }}
             />
+          ) : item.users ? (
+            <Image
+              style={styles.profileCommentImage}
+              source={{
+                uri: `http://13.233.229.68:8008/profile_images/${item.users[0]?.photo}`,
+              }}
+            />
           ) : null}
           <TextInput
             value={item?.commentInput}
@@ -446,11 +448,11 @@ const WalletScreen = ({ navigation }) => {
               styles.popularOption,
               activeButton === "latest" && styles.activeButton,
             ]}
-            onPress={()=>getLatestPost()}
+            onPress={() => getLatestPost()}
           >
             <Text style={styles.titleText}>Latest</Text>
           </TouchableOpacity>
-          
+
           <TouchableOpacity
             style={[
               styles.popularOption,

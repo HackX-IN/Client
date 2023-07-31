@@ -7,7 +7,9 @@ import {
   FlatList,
   TouchableOpacity,
   ScrollView,
+  ImageBackground,
 } from "react-native";
+import coin from "../../assets/coin.png";
 import ArrowLeft from "../../assets/ArrowLeft.png";
 import CountryPicker from "react-native-country-picker-modal";
 import {
@@ -16,12 +18,20 @@ import {
   widthPercentageToDP,
 } from "../../components/Pixel/index";
 import leftArrows from "../../assets/leftArrows.png";
+import LevelDigit from "../../assets/LevelDigit.png";
+import sild from "../../assets/sild.png";
 import bike1 from "../../assets/bike1.png";
 import bike2 from "../../assets/bike2.png";
 import Weekly from "./Weekly";
-import Player from "./Player";
-import Listview from "./Listview";
-import { GetRankingApi } from "../../services/Api";
+
+import frame1 from "../../assets/frame1.png";
+import frame2 from "../../assets/frame2.png";
+import frame3 from "../../assets/frame3.png";
+import {
+  GetAllranking,
+  GetTopReciever,
+  GetTopSender,
+} from "../../services/Api";
 
 const options = [
   {
@@ -31,7 +41,7 @@ const options = [
     name: "Receive",
   },
   {
-    name: "Winner",
+    name: "All",
   },
 ];
 
@@ -39,29 +49,217 @@ const SendRanking = ({ navigation }) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [countryName, setCountryName] = useState("US");
   const [countryPickerVisible, setCountryPickerVisible] = useState(false);
+  const [topsender, setTopSender] = useState([]);
+  const [topreciever, setTopReciever] = useState([]);
+  const [rankingData, setRankingData] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  const [isLoading, setIsLoading] = useState(false);
+  useEffect(() => {
+    getTopsenderData();
+    getTopreciever();
+    getRankingData();
+  }, []);
+
+  const getRankingData = async () => {
+    try {
+      const response = await GetAllranking();
+      const rankingData = response.data;
+      setRankingData(rankingData);
+      console.log("rankingData", rankingData);
+    } catch (error) {
+      console.log("Error fetching ranking data", error);
+    }
+  };
+  const getTopsenderData = async () => {
+    try {
+      const response = await GetTopSender();
+      const rankingData = response.data;
+      setTopSender(rankingData);
+      console.log("ToprankingData", rankingData);
+    } catch (error) {
+      console.log("Error fetching ranking data", error);
+    }
+  };
+  const getTopreciever = async () => {
+    try {
+      const response = await GetTopReciever();
+      const rankingData = response.data;
+      setTopReciever(rankingData);
+      console.log("Receiver rankingData", rankingData);
+    } catch (error) {
+      console.log("Error fetching ranking data", error);
+    }
+  };
 
   const onCountrySelect = (country) => {
     setCountryName(country.cca2);
     setCountryPickerVisible(false);
   };
 
-  const getRankingData = async () => {
-    try {
-      const selectedCategory = options[activeIndex].name;
-      const response = await GetRankingApi(selectedCategory);
-      const rankingData = response.data;
-    } catch (error) {
-      console.log("Error fetching ranking data", error);
-    }
-  };
-  useEffect(() => {
-    getRankingData();
-  }, [options]);
-
   const handleTouchableOpacityPress = () => {
     setCountryPickerVisible(true);
+  };
+
+  const ToprenderRow = ({ item, index }) => {
+    return (
+      <View style={{ flex: 1, flexDirection: "row", justifyContent: "center" }}>
+        <View
+          key={index}
+          style={item.name === "Player 1" ? styles.highlightedPlayer : null}
+        >
+          <View
+            style={{
+              padding: 10,
+              marginTop: item.name === "Player 1" ? -30 : -15,
+            }}
+          >
+            <Text
+              style={{
+                color: "black",
+                fontWeight: "bold",
+                textAlign: "center",
+                fontSize: hp(2.2),
+              }}
+            >
+              {index + 1}
+            </Text>
+            <ImageBackground
+              source={index == 0 ? frame2 : index == 1 ? frame1 : frame3}
+              style={{
+                width: wp(50),
+                height: hp(16),
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+              resizeMode="contain"
+            >
+              <Image
+                source={
+                  item.user_info?.photo
+                    ? {
+                        uri: `http://13.233.229.68:8008/profile_images/${item.user_info?.photo}`,
+                      }
+                    : item.sender_user_info[0]?.photo
+                    ? {
+                        uri: `http://13.233.229.68:8008/profile_images/${item.sender_user_info[0]?.photo} `,
+                      }
+                    : null
+                }
+                style={{
+                  width: 100,
+                  height: 100,
+                  resizeMode: "cover",
+                  marginTop: hp(4.4),
+                  borderRadius: 50,
+                }}
+              />
+            </ImageBackground>
+            <View
+              style={{
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+                marginTop: 5,
+              }}
+            >
+              <Text
+                style={{
+                  color: "black",
+                  fontWeight: "bold",
+                  textAlign: "center",
+                }}
+              >
+                {item.user_info?.name
+                  ? item.user_info?.name
+                  : item.sender_user_info[0]?.name
+                  ? item.sender_user_info[0]?.name
+                  : null}
+              </Text>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  marginTop: 2,
+                }}
+              >
+                <Image
+                  source={coin}
+                  style={{ width: 20, height: 20, resizeMode: "contain" }}
+                />
+                <Text
+                  style={{
+                    color: "#1877F2",
+                    padding: 5,
+                    marginLeft: 5,
+                    fontWeight: "600",
+                  }}
+                >
+                  {item?.totalCoin ? item?.totalCoin : item?.coin ? coin : null}
+                </Text>
+                <View style={styles.signalListView}>
+                  <Image
+                    style={[styles.photoView, { marginRight: wp(-2) }]}
+                    source={sild}
+                  />
+                  <Image style={[styles.photoView]} source={LevelDigit} />
+                </View>
+              </View>
+            </View>
+          </View>
+        </View>
+      </View>
+    );
+  };
+
+  const renderRow = ({ item, index }) => {
+    const isEven = index % 2 === 0;
+    return (
+      <View
+        style={[styles.rowContainer, isEven ? styles.evenRow : styles.oddRow]}
+      >
+        <Text style={styles.rowIndex}>{index + 4}</Text>
+        <Image
+          source={
+            item.user_info?.photo
+              ? {
+                  uri: `http://13.233.229.68:8008/profile_images/${item.user_info?.photo}`,
+                }
+              : item.sender_user_info[0]?.photo
+              ? {
+                  uri: `http://13.233.229.68:8008/profile_images/${item.sender_user_info[0]?.photo}`,
+                }
+              : null
+          }
+          style={styles.rowImage}
+        />
+        <View style={styles.userInfoContainer}>
+          <Text style={styles.rowText}>
+            {item.user_info?.name
+              ? item.user_info?.name
+              : item.sender_user_info[0]?.name
+              ? item.sender_user_info[0]?.name
+              : null}
+          </Text>
+          <View style={styles.levelContainer}>
+            <Image
+              source={require("../../assets/sild.png")}
+              style={styles.levelImage}
+            />
+            <Image
+              style={styles.levelImage1}
+              source={require("../../assets/LevelDigit.png")}
+            />
+          </View>
+        </View>
+        <View style={styles.coinsContainer}>
+          <Image source={coin} style={styles.coinImage} />
+          <Text style={styles.rowText1}>
+            {item?.totalCoin ? item?.totalCoin : item?.coin ? coin : null}
+          </Text>
+        </View>
+      </View>
+    );
   };
 
   return (
@@ -93,7 +291,7 @@ const SendRanking = ({ navigation }) => {
             style={styles.leftArrow}
             source={require("../../assets/filter.png")}
           />
-            <View
+          <View
             style={{
               backgroundColor: "#1877F2",
               color: "#1877F2",
@@ -170,16 +368,32 @@ const SendRanking = ({ navigation }) => {
         <Weekly />
       </View>
 
-      {activeIndex == 0 ? (
-        <>
-          <View style={{ height: hp(25) }}>
-            <Player />
-          </View>
-          <Listview />
-        </>
-      ) : (
-        <Text style={{ textAlign: "center" }}>No data available</Text>
-      )}
+      <View style={{ height: hp(25) }}>
+        <FlatList
+          data={
+            activeIndex == 0
+              ? topsender
+              : activeIndex == 1
+              ? topreciever
+              : rankingData
+          }
+          renderItem={ToprenderRow}
+          keyExtractor={(item) => item._id}
+          showsVerticalScrollIndicator={false}
+        />
+      </View>
+      <FlatList
+        data={
+          activeIndex == 0
+            ? topsender
+            : activeIndex == 1
+            ? topreciever
+            : rankingData
+        }
+        renderItem={renderRow}
+        keyExtractor={(item) => item._id}
+        showsVerticalScrollIndicator={false}
+      />
     </View>
   );
 };
@@ -236,6 +450,86 @@ const styles = StyleSheet.create({
   },
   filterButton: {
     marginLeft: wp(1.5),
+  },
+  rowContainer: {
+    marginTop: 5,
+    flexDirection: "row",
+    padding: 10,
+    alignItems: "center",
+    borderBottomWidth: 2,
+    borderBottomColor: "#d6d4d4",
+    borderRadius: 2,
+    justifyContent: "space-between", // To distribute items evenly
+  },
+  evenRow: {
+    backgroundColor: "#f9f9f9",
+  },
+  oddRow: {
+    backgroundColor: "#fff",
+  },
+  rowIndex: {
+    color: "black",
+    fontSize: 16,
+    fontWeight: "700",
+  },
+  rowImage: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    alignItems: "center",
+    justifyContent: "center",
+    marginLeft: 8,
+  },
+  userInfoContainer: {
+    flexDirection: "row",
+    marginLeft: 10,
+    flex: 1,
+  },
+  levelContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  levelImage: {
+    width: 15,
+    height: 15,
+    resizeMode: "contain",
+    marginLeft: 3,
+  },
+  levelImage1: {
+    width: 15,
+    height: 15,
+    resizeMode: "contain",
+    marginLeft: -3,
+  },
+  rowText: {
+    color: "black",
+    fontWeight: "bold",
+  },
+  coinsContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  coinImage: {
+    width: 20,
+    height: 20,
+    resizeMode: "contain",
+    marginRight: 5,
+  },
+  rowText1: {
+    color: "#1877F2",
+    fontWeight: "bold",
+  },
+  highlightedPlayer: {
+    backgroundColor: "#f9f9f9",
+  },
+  signalListView: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  photoView: {
+    width: wp(7),
+    height: hp(5),
+    resizeMode: "contain",
   },
 });
 
