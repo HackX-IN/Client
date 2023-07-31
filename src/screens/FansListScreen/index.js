@@ -23,13 +23,12 @@ const FanListScreen = ({ navigation, route }) => {
   const [followers, setFollowers] = useState([]);
   const [following, setFollowing] = useState([]); // Changed from Following to following
   const [countryName, setCountryName] = useState("IN");
+  const [userCountry, setUserCountry] = useState("");
 
   useEffect(() => {
-    if (followers?.country in countryCodes) {
-      const country = countryCodes[followers?.country];
-      console.log(
-        `Country Code ${followers?.country} corresponds to ${country}`
-      );
+    if (userCountry in countryCodes) {
+      const country = countryCodes[userCountry];
+      console.log(`Country Code ${userCountry} corresponds to ${country}`);
       setCountryName(country);
     } else {
       console.log("Invalid country code");
@@ -37,11 +36,9 @@ const FanListScreen = ({ navigation, route }) => {
   }, [followers]);
 
   useEffect(() => {
-    if (following?.country in countryCodes) {
-      const country = countryCodes[following?.country];
-      console.log(
-        `Country Code ${following?.country} corresponds to ${country}`
-      );
+    if (userCountry in countryCodes) {
+      const country = countryCodes[userCountry];
+      console.log(`Country Code ${userCountry} corresponds to ${country}`);
       setCountryName(country);
     } else {
       console.log("Invalid country code");
@@ -75,6 +72,9 @@ const FanListScreen = ({ navigation, route }) => {
       const followingData = response.data.data;
       console.log("Number of Followings", followingData);
       setFollowing(followingData);
+      followingData.forEach((following) => {
+        const valueId = following.following_details?.country;
+      });
     } catch (error) {
       console.log("Error Get Followings", error);
     }
@@ -93,6 +93,13 @@ const FanListScreen = ({ navigation, route }) => {
       name === "Fans List"
         ? item.follower_details?.photo
         : item.following_details?.photo;
+
+    const country =
+      name === "Fans List"
+        ? item.follower_details?.country
+        : item.following_details?.country;
+    console.log(country);
+    setUserCountry(country);
 
     return (
       <View

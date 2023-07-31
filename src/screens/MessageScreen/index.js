@@ -105,17 +105,40 @@ const MessageScreen = ({ navigation }) => {
   };
 
   useEffect(() => {
-    db.collection(`rooms`)
-      .orderBy("date", "desc")
-      .onSnapshot((snapshot) => {
-        snapshot?.docs?.map((doc) => {
-          chatData.push(doc.data());
-          setRefresh(!refresh);
-        });
-      });
+    const subscribe = navigation.addListener("focus", () => {
+      responseData();
+    });
   }, []);
 
+  const responseData = async () => {
+    let dataArray = [];
+    try {
+      db.collection(`rooms`)
+        .orderBy("date", "desc")
+        .onSnapshot((snapshot) => {
+          snapshot?.docs?.map((doc) => {
+            console.log("Get Messahe", doc.data());
+            dataArray.push(doc.data());
+          });
+        });
+      setTimeout(() => {
+        setChatData(dataArray);
+        setRefresh(!refresh);
+      }, 400);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   const renderItem = ({ item, index }) => {
+    console.log(
+      "Get Response >>>>>",
+      userId,
+      item.senderId,
+      userId,
+      item.receiverId,
+      userId == item.senderId || userId == item.receiverId
+    );
     if (userId == item.senderId || userId == item.receiverId) {
       return (
         <TouchableOpacity
@@ -145,19 +168,12 @@ const MessageScreen = ({ navigation }) => {
             })
           }
         >
-          {item.image ? (
-            <Image
-              style={{ width: 60, height: 60, borderRadius: 60 }}
-              source={{
-                uri: `http://13.233.229.68:8008/profile_images/${item.image}`,
-              }}
-            />
-          ) : (
-            <Image
-              style={{ width: 60, height: 60, borderRadius: 60 }}
-              source={require("../../assets/noimage.png")}
-            />
-          )}
+          <Image
+            style={{ width: 60, height: 60, borderRadius: 60 }}
+            source={{
+              uri: `http://13.233.229.68:8008/profile_images/${item.image}`,
+            }}
+          />
 
           <View style={{ width: "70%", marginLeft: wp(3) }}>
             <View
@@ -192,7 +208,7 @@ const MessageScreen = ({ navigation }) => {
             <Text
               style={{ fontSize: hp(1.8), color: "#0371FF", fontWeight: "500" }}
             >
-              {item.last_msg}
+              {item.lastmsg}
             </Text>
           </View>
         </TouchableOpacity>

@@ -241,10 +241,8 @@ const ChatScreen = ({ navigation, route }) => {
     if (lastchat) {
       chat.update({
         date: new Date(lastchat.createdAt).getTime(),
-        [`lastmsg${user.id}`]: lastchat.text,
-        [`lastmsg${rcvr.id}`]: lastchat.text,
-        [`lastuser${user.id}`]: lastchat.user.name.split(" ")[0],
-        [`lastuser${rcvr.id}`]: lastchat.user.name.split(" ")[0],
+        [`lastmsg`]: lastchat.text,
+        [`lastuser`]: lastchat.user.name.split(" ")[0],
         lasttime: lastchat.createdAt,
       });
     }

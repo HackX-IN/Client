@@ -127,14 +127,14 @@ const LevelScreen = ({ navigation }) => {
               ]}
             >
               <View style={styles.signalListView}>
-                <Image
+                {/* <Image
                   style={[styles.photoView, { marginRight: wp(-2) }]}
                   source={sild}
-                />
+                /> */}
                 <Image
                   style={[styles.photoView]}
                   source={{
-                    uri: `http://13.233.229.68:8008/all_levels/${item?.levelImgUrl}`,
+                    uri: `http://13.233.229.68:8008/store/${item?.levelImgUrl}`,
                   }}
                 />
               </View>
@@ -186,7 +186,7 @@ const styles = StyleSheet.create({
     height: hp(7),
   },
   photoView: {
-    width: wp(10),
+    width: wp(25),
     height: hp(5),
     resizeMode: "contain",
   },

@@ -26,18 +26,18 @@ const options = [
 const Weekly = () => {
   const [activeIndex, setActiveIndex] = useState(0);
 
-  const getRankingData = async () => {
-    try {
-      const selectedCategory = options[activeIndex].name;
-      const response = await GetRankingApi(selectedCategory);
-      const rankingData = response.data;
-    } catch (error) {
-      console.log("Error fetching ranking data", error);
-    }
-  };
-  useEffect(() => {
-    getRankingData;
-  }, [options]);
+  // const getRankingData = async () => {
+  //   try {
+  //     const selectedCategory = options[activeIndex].name;
+  //     const response = await GetRankingApi(selectedCategory);
+  //     const rankingData = response.data;
+  //   } catch (error) {
+  //     console.log("Error fetching ranking data", error);
+  //   }
+  // };
+  // useEffect(() => {
+  //   getRankingData;
+  // }, [options]);
 
   return (
     <View

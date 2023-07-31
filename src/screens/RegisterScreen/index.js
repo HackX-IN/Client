@@ -99,7 +99,7 @@ const RegisterScreen = ({ navigation }) => {
         });
 
         const response = await RegistrationScreenApi(raw);
-        console.log("Get Response:::", raw, date);
+        console.log("Get Response:::", response.data.data._id);
         if (response.data.success) {
           await firestore()
             .collection("users")
@@ -114,11 +114,9 @@ const RegisterScreen = ({ navigation }) => {
               userId: response.data.data._id,
               country: countryCode,
           })
-          .then((res) => {
+          .then(async(res) => {
             console.log("Get Firebase Response::", res);
-          });
-
-          var raw1 = JSON.stringify({
+            var raw1 = JSON.stringify({
               otp: 1122,
               mobile: mobile
             });
@@ -147,6 +145,9 @@ const RegisterScreen = ({ navigation }) => {
               setIsLoading(false)
               alert(response1.data.message)
           }
+          });
+
+       
         } else {
           setIsLoading(false);
           alert(response.data.message);

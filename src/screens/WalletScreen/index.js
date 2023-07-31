@@ -276,7 +276,6 @@ const WalletScreen = ({ navigation }) => {
           showsButtons={false}
         >
           <View style={{ width: "97%", alignSelf: "center", height: "100%" }}>
-            {/**
             {item.postUrl ? (
               <Image
                 style={styles.imageBox}
@@ -284,7 +283,7 @@ const WalletScreen = ({ navigation }) => {
                   uri: `http://13.233.229.68:8008/posts/${item?.postUrl}`,
                 }}
               />
-            ) : null}**/}
+            ) : null}
           </View>
         </Swiper>
 
@@ -435,31 +434,21 @@ const WalletScreen = ({ navigation }) => {
       <View style={styles.container}>
         <View style={styles.topButtonStyle}>
           <TouchableOpacity
-            style={[
-              styles.popularOption,
-              activeButton === "popular" && styles.activeButton,
-            ]}
-            onPress={getPopularPost}
+            style={[styles.popularOption]}
+            onPress={() => getPopularPost()}
           >
             <Text style={styles.titleText}>Popular</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={[
-              styles.popularOption,
-              activeButton === "latest" && styles.activeButton,
-            ]}
+            style={[styles.popularOption]}
             onPress={() => getLatestPost()}
           >
             <Text style={styles.titleText}>Latest</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={[
-              styles.popularOption,
-              activeButton === "following" && styles.activeButton,
-              { borderRightWidth: 0 },
-            ]}
-            onPress={getFollowingPost}
+            style={[styles.popularOption, { borderRightWidth: 0 }]}
+            onPress={() => getFollowingPost()}
           >
             <Text style={styles.titleText}>Following</Text>
           </TouchableOpacity>
@@ -469,7 +458,7 @@ const WalletScreen = ({ navigation }) => {
             activeButton === "popular"
               ? popularPost
               : activeButton === "latest"
-              ? latest
+              ? postData
               : following
           }
           renderItem={renderItem}

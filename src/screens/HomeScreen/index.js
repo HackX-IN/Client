@@ -125,27 +125,25 @@ const HomeScreen = ({ navigation, route }) => {
     try {
       const response = await onGetLiveStreamingApi();
       let data = response.data.data;
-      data.map((item,index)=>{
-        
-        console.log("Get Data:::",item._id)
-      })
-      
+      data.map((item, index) => {
+        console.log("Get Data:::", item._id);
+      });
+
       setLiveData(data.reverse());
     } catch (err) {
       console.log("Error:", err);
     }
-    
   };
 
   const addWatchList = async (item) => {
-    const authToken = await AsyncStorage.getItem("token");
-
-    const raw = JSON.stringify({
-      userId: authToken,
-      liveId: item._id,
-    });
-
     try {
+      const authToken = await AsyncStorage.getItem("token");
+
+      const raw = JSON.stringify({
+        userId: authToken,
+        liveId: item._id,
+      });
+
       const response = await onWatchListAddApi(raw);
       console.log(
         "Response Live Streaming",
@@ -161,7 +159,7 @@ const HomeScreen = ({ navigation, route }) => {
         userItem: item,
       });
     } catch (error) {
-      console.log("Error:", error);
+      console.error("Error in addWatchList:", error);
     }
   };
 
@@ -398,7 +396,7 @@ const HomeScreen = ({ navigation, route }) => {
               onPress={() =>
                 navigation.navigate("SearchProfile", { userList: userList })
               }
-              style={{backgroundColor:"#F0F0f0",marginTop:hp(1)}}
+              style={{ backgroundColor: "#F0F0f0", marginTop: hp(1) }}
             >
               <View style={styles.userContainer}>
                 <Image

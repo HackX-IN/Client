@@ -6,6 +6,7 @@ import {
 } from "../../components/Pixel";
 import {
   FollowUserApi,
+  getEarningHistory,
   getFollowersApi,
   getFollowingApi,
   onGetUserApi,
@@ -18,18 +19,75 @@ import firestore from "@react-native-firebase/firestore";
 
 const Index = ({ route, navigation }) => {
   const { userList } = route.params;
-  console.log(userList);
+
   const [following, setFollowing] = useState(0);
   const [profileData, setProfileData] = useState(null);
   const [followed, setFollowed] = useState(false);
   const [followers, setFollowers] = useState(0);
   const [countryName, setCountryName] = useState("IN");
+  const [Sender, setSender] = useState(0);
+  const [reciever, setReceiver] = useState(0);
   const db = firestore();
 
   useEffect(() => {
     getFollowers();
     getFollowingUsers();
     onGetUserData();
+  }, []);
+
+  const EarningHistory = async () => {
+    try {
+      const authToken = userList._id;
+      console.log("authToken", authToken);
+
+      var raw = JSON.stringify({
+        userId: authToken,
+        status: 1,
+      });
+
+      const response = await getEarningHistory(raw);
+
+      let totalSender = 0;
+
+      response.data.data.forEach((item) => {
+        totalSender += item.receiver?.length || 0;
+      });
+
+      setSender(totalSender);
+    } catch (error) {
+      console.error("Error in EarningHistory:", error);
+    }
+  };
+
+  const EarningHistory1 = async () => {
+    try {
+      const authToken = userList._id;
+      console.log("authToken", authToken);
+
+      var raw = JSON.stringify({
+        userId: authToken,
+        status: 2,
+      });
+
+      const response = await getEarningHistory(raw);
+
+      let totalSender = 0;
+
+      response.data.data.forEach((item) => {
+        totalSender += item.sender?.length || 0;
+      });
+
+      console.log("Total Sender Length:", totalSender);
+
+      setReceiver(totalSender);
+    } catch (error) {
+      console.error("Error in EarningHistory:", error);
+    }
+  };
+
+  useEffect(() => {
+    EarningHistory();
+    EarningHistory1();
   }, []);
 
   const getFollowers = async () => {
@@ -123,26 +181,30 @@ const Index = ({ route, navigation }) => {
   };
 
   const onChattingAdd = async () => {
-    db.collection("rooms").add({
-      date: new Date(),
-      image: userList?.photo,
-      receiverId: userList?._id,
-      receiver_name: userList?.name,
-      senderId: profileData?._id,
-      sender_name: profileData?.name,
-    }).then((res)=>{
-      navigation.navigate("ChatScreen", {
-        rcvr: {
+    db.collection("rooms")
+      .add({
+        date: new Date(),
+        image: userList?.photo,
+        receiverId: userList?._id,
+        receiver_name: userList?.name,
+        senderId: profileData?._id,
+        sender_name: profileData?.name,
+      })
+      .then((res) => {
+        db.collection("rooms").doc(res.id).update({
           id: res.id,
-          receiver_id: userList._id,
-          name: userList.name,
-          profilePic: userList?.photo,
-        },
-        rcvrpic: userList?.photo,
-        user: { id: profileData?._id, name: profileData?.name },
+        });
+        navigation.navigate("ChatScreen", {
+          rcvr: {
+            id: res.id,
+            receiver_id: userList._id,
+            name: userList.name,
+            profilePic: userList?.photo,
+          },
+          rcvrpic: userList?.photo,
+          user: { id: profileData?._id, name: profileData?.name },
+        });
       });
-    })
-    
   };
 
   useEffect(() => {
@@ -381,7 +443,7 @@ const Index = ({ route, navigation }) => {
                 fontWeight: "700",
               }}
             >
-              0
+              {Sender}
             </Text>
             <Text
               style={{
@@ -412,7 +474,7 @@ const Index = ({ route, navigation }) => {
                 fontWeight: "700",
               }}
             >
-              0
+              {reciever}
             </Text>
             <Text
               style={{

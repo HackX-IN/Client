@@ -41,24 +41,11 @@ import {
   onGetUserApi,
   onAddLiveStreamingApi,
   SendGiftApi,
-  onLiveLiveStreamingApi,
-  onKickDownApi,
-  onRequestUserApi,
-  onSendCoinApi,
-  onBlockUserApi,
-  onDeleteLiveStreamingApi,
-  onRemoveWatchUserApi,
   onGetUserAcceptRequestApi,
-  onGetUserPendingRequestApi,
   onGetStoreItemsApi,
   onGetWatchLiveStreamingApi,
-  onUpdatePendingRequestApi,
-  onSendMessageApi,
   onGetMessageApi,
-  onGetKickOutApi,
-  onMakeAdminApi,
   FollowUserApi,
-  unFollowUserApi,
   getFollowersApi,
   getFollowingApi,
 } from "../../services/Api.js";
@@ -408,22 +395,21 @@ const LiveStreamingScreen = ({ navigation, route, props }) => {
 
   const onSendCoin = async () => {
     setGiftView(false);
-      const authToken = await AsyncStorage.getItem("token");
+    const authToken = await AsyncStorage.getItem("token");
 
-      var raw = JSON.stringify({
-        sender: authToken,
-        receiver: route.params.receiverId,
-        coin: selectCoin * count,
-      });
-      const response = await SendGiftApi(raw);
-      console.log("Response Live Streaming", response.data);
-
+    var raw = JSON.stringify({
+      sender: authToken,
+      receiver: route.params.receiverId,
+      coin: selectCoin * count,
+    });
+    const response = await SendGiftApi(raw);
+    console.log("Response Live Streaming", response.data);
   };
 
   useEffect(() => {
     setIsHost(route.params.isHost);
     init();
-      onGetUserData();
+    onGetUserData();
 
     setArrayCoin(giftArray);
     setArrayCount(countArray);
@@ -439,25 +425,29 @@ const LiveStreamingScreen = ({ navigation, route, props }) => {
           liveUniqueId: route.params.randomUserID,
           channelName: "testLiveID",
         });
-        console.log("Response Lve Streaming", raw);
+        console.log("Request Live Streaming", raw);
+
         const response = await onAddLiveStreamingApi(raw);
+        console.log("Response Live Streaming", response.data);
 
         setRefresh(!refresh);
         setLiveId(response.data.data._id);
 
-        setInterval(() => {
+        const intervalId = setInterval(() => {
           getWatchList(response.data.data._id);
         }, 1000);
+
+        setWatchListIntervalId(intervalId);
       }
     } catch (err) {
-      console.log("Response Lve Streaming", err);
+      console.error("Error in init:", err);
     }
   };
 
   const followUser = async () => {
     console.log(UserData?.name);
     const followFrom = UserData?._id;
-    const followTo =  route.params.receiverId;
+    const followTo = route.params.receiverId;
 
     if (followFrom === followTo) {
       // User cannot follow themselves
@@ -512,16 +502,17 @@ const LiveStreamingScreen = ({ navigation, route, props }) => {
 
   return (
     <View style={styles.container}>
+      
       <View style={styles.container1}>
         <ZegoUIKitPrebuiltLiveStreaming
           ref={prebuiltRef}
           appID={KeyCenter.appID}
           appSign={KeyCenter.appSign}
-          userID="You"
-          userName={route.params.isHost ? "Host" : "You"}
+          userID={!isHost ? "Audience" : "Host"}
+          userName={!isHost ? "Audience" : "Host"}
           liveID="testLiveId"
           config={{
-            ...(route.params.isHost === true
+            ...(route.params.isHost
               ? HOST_DEFAULT_CONFIG
               : AUDIENCE_DEFAULT_CONFIG),
             onStartLiveButtonPressed: () => {
@@ -529,7 +520,7 @@ const LiveStreamingScreen = ({ navigation, route, props }) => {
             },
             onLiveStreamingEnded: () => {
               console.log("########HostPage onLiveStreamingEnded");
-              navigation.navigate("LiveScreen");
+              navigation.navigate("HomeScreen");
             },
             onLeaveLiveStreaming: () => {
               console.log("########HostPage onLeaveLiveStreaming");
@@ -550,11 +541,11 @@ const LiveStreamingScreen = ({ navigation, route, props }) => {
             },
             onWindowMinimized: () => {
               console.log("[Demo]HostPage onWindowMinimized");
-              navigation.navigate("LiveScreen");
+              navigation.navigate("HomeScreen");
             },
             onWindowMaximized: () => {
               console.log("[Demo]HostPage onWindowMaximized");
-              navigation.navigate("LiveScreen", {
+              navigation.navigate("HomeScreen", {
                 liveID: "testLiveId",
               });
             },

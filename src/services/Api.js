@@ -583,7 +583,7 @@ export const onGetUserPendingRequestApi = async (id) => {
 export const onGetEaringCoinApi = async () => {
   const authToken = await AsyncStorage.getItem("token");
 
-  const url = Api.baseUrl + `live/live-earning-history/${authToken}`;
+  const url = Api.baseUrl + `live/live-earning-history`;
 
   return new Promise((resolve, reject) => {
     axios
@@ -915,6 +915,70 @@ export const GetAllranking = async () => {
         console.log("::response for latest::", res);
         return resolve(res);
       })
+      .catch((err) => reject(err));
+  });
+};
+
+export const getEarningHistory = async (responseData) => {
+  const url = Api.baseUrl + `live/live-all-earning-history-byUser`;
+
+  try {
+    const response = await axios.post(url, responseData, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    return response;
+  } catch (error) {
+    throw new Error("Error in getEarningHistory:", error);
+  }
+};
+
+export const getTopSenderByCountry = async (id) => {
+  const url = Api.baseUrl + `live/getTopSenderByCountry/${id}`;
+
+  return new Promise((resolve, reject) => {
+    axios
+      .get(url, {
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+      })
+      .then((res) => resolve(res))
+      .catch((err) => reject(err));
+  });
+};
+
+export const getTopRecieverByCountry = async (id) => {
+  const url = Api.baseUrl + `live/getTopReciverByCountry/${id}`;
+
+  return new Promise((resolve, reject) => {
+    axios
+      .get(url, {
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+      })
+      .then((res) => resolve(res))
+      .catch((err) => reject(err));
+  });
+};
+
+export const onGetOtherUserApi = async (id) => {
+  const url = Api.baseUrl + `user/get/${id}`;
+
+  return new Promise((resolve, reject) => {
+    axios
+      .get(url, {
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+      })
+      .then((res) => resolve(res))
       .catch((err) => reject(err));
   });
 };

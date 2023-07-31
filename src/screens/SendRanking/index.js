@@ -20,8 +20,6 @@ import {
 import leftArrows from "../../assets/leftArrows.png";
 import LevelDigit from "../../assets/LevelDigit.png";
 import sild from "../../assets/sild.png";
-import bike1 from "../../assets/bike1.png";
-import bike2 from "../../assets/bike2.png";
 import Weekly from "./Weekly";
 
 import frame1 from "../../assets/frame1.png";
@@ -31,6 +29,8 @@ import {
   GetAllranking,
   GetTopReciever,
   GetTopSender,
+  getTopRecieverByCountry,
+  getTopSenderByCountry,
 } from "../../services/Api";
 
 const options = [
@@ -41,16 +41,19 @@ const options = [
     name: "Receive",
   },
   {
-    name: "All",
+    name: "Winner",
   },
 ];
 
 const SendRanking = ({ navigation }) => {
   const [activeIndex, setActiveIndex] = useState(0);
-  const [countryName, setCountryName] = useState("US");
+  const [countryName, setcountryName] = useState("US");
+  const [countryCode, setcountryCode] = useState("+1");
   const [countryPickerVisible, setCountryPickerVisible] = useState(false);
   const [topsender, setTopSender] = useState([]);
   const [topreciever, setTopReciever] = useState([]);
+  const [top3Sender, setTop3Sender] = useState([]);
+  const [top3Reciever, setTop3Reciever] = useState([]);
   const [rankingData, setRankingData] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -60,106 +63,493 @@ const SendRanking = ({ navigation }) => {
     getRankingData();
   }, []);
 
+  const OnTopSender = async (country) => {
+    const customOrder = [1, 0, 2];
+    console.log("Get Country Code:::", country);
+    const response = await getTopSenderByCountry(country);
+    console.log("Get TopSend:::", response.data);
+    if (response.data.status) {
+      setTopSender(response.data.data);
+
+      const reorderedData = data
+        .map((item, index) => ({ item, index })) // Add the index to each item object
+        .sort(
+          (a, b) => customOrder.indexOf(a.index) - customOrder.indexOf(b.index)
+        ) // Sort based on customOrder
+        .map((item) => item.item);
+
+      setTop3Sender(reorderedData);
+    }
+
+    setCountryPickerVisible(false);
+  };
+
+  const OnTopReciever = async (country) => {
+    const customOrder = [1, 0, 2];
+    console.log("Get Country Code:::", country);
+    const response = await getTopRecieverByCountry(country);
+    console.log("Get Reciever:::", response.data);
+    if (response.data.status) {
+      setTopReciever(response.data.data);
+
+      const reorderedData = data
+        .map((item, index) => ({ item, index })) // Add the index to each item object
+        .sort(
+          (a, b) => customOrder.indexOf(a.index) - customOrder.indexOf(b.index)
+        ) // Sort based on customOrder
+        .map((item) => item.item);
+
+      setTop3Reciever(reorderedData);
+    }
+
+    setCountryPickerVisible(false);
+  };
+
   const getRankingData = async () => {
     try {
       const response = await GetAllranking();
       const rankingData = response.data;
       setRankingData(rankingData);
-      console.log("rankingData", rankingData);
+      // console.log("rankingData", rankingData);
     } catch (error) {
       console.log("Error fetching ranking data", error);
     }
   };
   const getTopsenderData = async () => {
+    const customOrder = [1, 0, 2];
     try {
       const response = await GetTopSender();
       const rankingData = response.data;
       setTopSender(rankingData);
+      const reorderedData = response.data
+        .map((item, index) => ({ item, index })) // Add the index to each item object
+        .sort(
+          (a, b) => customOrder.indexOf(a.index) - customOrder.indexOf(b.index)
+        ) // Sort based on customOrder
+        .map((item) => item.item);
+
+      setTop3Sender(reorderedData);
       console.log("ToprankingData", rankingData);
     } catch (error) {
       console.log("Error fetching ranking data", error);
+      // Handle the error here (e.g., show an error message)
     }
   };
   const getTopreciever = async () => {
+    const customOrder = [1, 0, 2];
     try {
       const response = await GetTopReciever();
       const rankingData = response.data;
       setTopReciever(rankingData);
+      const reorderedData = response.data
+        .map((item, index) => ({ item, index })) // Add the index to each item object
+        .sort(
+          (a, b) => customOrder.indexOf(a.index) - customOrder.indexOf(b.index)
+        ) // Sort based on customOrder
+        .map((item) => item.item);
+
+      setTop3Reciever(reorderedData);
       console.log("Receiver rankingData", rankingData);
     } catch (error) {
       console.log("Error fetching ranking data", error);
+      // Handle the error here (e.g., show an error message)
     }
   };
 
   const onCountrySelect = (country) => {
-    setCountryName(country.cca2);
-    setCountryPickerVisible(false);
+    setcountryName(country.cca2);
+    setcountryCode("+" + country.callingCode[0]);
+    console.log(countryCode);
+    if (activeIndex === 0) {
+      OnTopSender(countryCode);
+    } else {
+      OnTopReciever(countryCode);
+    }
   };
-
   const handleTouchableOpacityPress = () => {
     setCountryPickerVisible(true);
   };
 
   const ToprenderRow = ({ item, index }) => {
-    return (
-      <View style={{ flex: 1, flexDirection: "row", justifyContent: "center" }}>
-        <View
-          key={index}
-          style={item.name === "Player 1" ? styles.highlightedPlayer : null}
-        >
-          <View
-            style={{
-              padding: 10,
-              marginTop: item.name === "Player 1" ? -30 : -15,
-            }}
-          >
-            <Text
-              style={{
-                color: "black",
-                fontWeight: "bold",
-                textAlign: "center",
-                fontSize: hp(2.2),
-              }}
-            >
-              {index + 1}
-            </Text>
-            <ImageBackground
-              source={index == 0 ? frame2 : index == 1 ? frame1 : frame3}
-              style={{
-                width: wp(50),
-                height: hp(16),
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-              resizeMode="contain"
-            >
-              <Image
-                source={
-                  item.user_info?.photo
-                    ? {
-                        uri: `http://13.233.229.68:8008/profile_images/${item.user_info?.photo}`,
-                      }
-                    : item.sender_user_info[0]?.photo
-                    ? {
-                        uri: `http://13.233.229.68:8008/profile_images/${item.sender_user_info[0]?.photo} `,
-                      }
-                    : null
-                }
+    let lengthGet = activeIndex == 0 ? top3Sender.length : top3Reciever.length;
+    if (index < 3) {
+      console.log("Get Data::::", item);
+      if (lengthGet != 1) {
+        return (
+          <>
+            {index == 0 && (
+              <View
                 style={{
-                  width: 100,
-                  height: 100,
-                  resizeMode: "cover",
-                  marginTop: hp(4.4),
-                  borderRadius: 50,
+                  height: hp(28),
+                  flexDirection: "row",
+                  width: wp(30),
+                  alignItems: "flex-end",
+                  justifyContent: "center",
                 }}
-              />
-            </ImageBackground>
+              >
+                <View
+                  style={{
+                    padding: 10,
+                    marginTop: -15,
+                  }}
+                >
+                  <Text
+                    style={{
+                      color: "black",
+                      fontWeight: "bold",
+                      textAlign: "center",
+                      fontSize: hp(2.2),
+                    }}
+                  >
+                    {"2"}
+                  </Text>
+                  <ImageBackground
+                    source={frame3}
+                    style={{
+                      width: wp(25),
+                      height: hp(10),
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                    resizeMode="contain"
+                  >
+                    <Image
+                      source={
+                        item.user_info?.photo
+                          ? {
+                              uri: `http://13.233.229.68:8008/profile_images/${item.user_info?.photo}`,
+                            }
+                          : item?.sender_user_info != undefined
+                          ? {
+                              uri: `http://13.233.229.68:8008/profile_images/${item?.sender_user_info[0]?.photo} `,
+                            }
+                          : null
+                      }
+                      style={{
+                        width: 55,
+                        height: 55,
+                        resizeMode: "cover",
+                        marginTop: hp(2.5),
+                        borderRadius: 50,
+                      }}
+                    />
+                  </ImageBackground>
+                  <View
+                    style={{
+                      flexDirection: "column",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      marginTop: 5,
+                    }}
+                  >
+                    <Text
+                      style={{
+                        color: "black",
+                        fontWeight: "bold",
+                        textAlign: "center",
+                      }}
+                    >
+                      {item.user_info?.name
+                        ? item.user_info?.name
+                        : item.sender_user_info[0]?.name
+                        ? item.sender_user_info[0]?.name
+                        : null}
+                    </Text>
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        marginTop: 2,
+                      }}
+                    >
+                      <Image
+                        source={coin}
+                        style={{ width: 20, height: 20, resizeMode: "contain" }}
+                      />
+                      <Text
+                        style={{
+                          color: "#1877F2",
+                          padding: 5,
+                          marginLeft: 5,
+                          fontWeight: "600",
+                        }}
+                      >
+                        {item?.totalCoin
+                          ? item?.totalCoin
+                          : item?.coin
+                          ? coin
+                          : null}
+                      </Text>
+                      <View style={styles.signalListView}>
+                        <Image
+                          style={[styles.photoView, { marginRight: wp(-2) }]}
+                          source={sild}
+                        />
+                        <Image style={[styles.photoView]} source={LevelDigit} />
+                      </View>
+                    </View>
+                  </View>
+                </View>
+              </View>
+            )}
+            {index == 1 && (
+              <View
+                style={{
+                  height: hp(28),
+                  flexDirection: "row",
+                  width: wp(35),
+                  alignItems: "flex-end",
+                  justifyContent: "center",
+                }}
+              >
+                <View key={index} style={null}>
+                  <View
+                    style={{
+                      padding: 10,
+                      marginTop: -30,
+                    }}
+                  >
+                    <Text
+                      style={{
+                        color: "black",
+                        fontWeight: "bold",
+                        textAlign: "center",
+                        fontSize: hp(2.2),
+                      }}
+                    >
+                      {"1"}
+                    </Text>
+                    <ImageBackground
+                      source={frame2}
+                      style={{
+                        width: wp(32),
+                        height: hp(14),
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                      resizeMode="contain"
+                    >
+                      <Image
+                        source={
+                          item.user_info?.photo
+                            ? {
+                                uri: `http://13.233.229.68:8008/profile_images/${item.user_info?.photo}`,
+                              }
+                            : item?.sender_user_info != undefined
+                            ? {
+                                uri: `http://13.233.229.68:8008/profile_images/${item?.sender_user_info[0]?.photo} `,
+                              }
+                            : null
+                        }
+                        style={{
+                          width: 80,
+                          height: 80,
+                          resizeMode: "cover",
+                          marginTop: hp(4.4),
+                          borderRadius: 50,
+                        }}
+                      />
+                    </ImageBackground>
+                    <View
+                      style={{
+                        flexDirection: "column",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        marginTop: 5,
+                      }}
+                    >
+                      <Text
+                        style={{
+                          color: "black",
+                          fontWeight: "bold",
+                          textAlign: "center",
+                        }}
+                      >
+                        {item.user_info?.name
+                          ? item.user_info?.name
+                          : item.sender_user_info[0]?.name
+                          ? item.sender_user_info[0]?.name
+                          : null}
+                      </Text>
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          marginTop: 2,
+                        }}
+                      >
+                        <Image
+                          source={coin}
+                          style={{
+                            width: 20,
+                            height: 20,
+                            resizeMode: "contain",
+                          }}
+                        />
+                        <Text
+                          style={{
+                            color: "#1877F2",
+                            padding: 5,
+                            marginLeft: 5,
+                            fontWeight: "600",
+                          }}
+                        >
+                          {item?.totalCoin
+                            ? item?.totalCoin
+                            : item?.coin
+                            ? coin
+                            : null}
+                        </Text>
+                        <View style={styles.signalListView}>
+                          <Image
+                            style={[styles.photoView, { marginRight: wp(-2) }]}
+                            source={sild}
+                          />
+                          <Image
+                            style={[styles.photoView]}
+                            source={LevelDigit}
+                          />
+                        </View>
+                      </View>
+                    </View>
+                  </View>
+                </View>
+              </View>
+            )}
+            {index == 2 && (
+              <View
+                style={{
+                  height: hp(28),
+                  flexDirection: "row",
+                  width: wp(30),
+                  alignItems: "flex-end",
+                  justifyContent: "center",
+                }}
+              >
+                <View
+                  style={{
+                    padding: 10,
+                    marginTop: -15,
+                  }}
+                >
+                  <Text
+                    style={{
+                      color: "black",
+                      fontWeight: "bold",
+                      textAlign: "center",
+                      fontSize: hp(2.2),
+                    }}
+                  >
+                    {"3"}
+                  </Text>
+                  <ImageBackground
+                    source={frame3}
+                    style={{
+                      width: wp(25),
+                      height: hp(10),
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                    resizeMode="contain"
+                  >
+                    <Image
+                      source={
+                        item.user_info?.photo
+                          ? {
+                              uri: `http://13.233.229.68:8008/profile_images/${item.user_info?.photo}`,
+                            }
+                          : item?.sender_user_info != undefined
+                          ? {
+                              uri: `http://13.233.229.68:8008/profile_images/${item?.sender_user_info[0]?.photo} `,
+                            }
+                          : null
+                      }
+                      style={{
+                        width: 55,
+                        height: 55,
+                        resizeMode: "cover",
+                        marginTop: hp(2.5),
+                        borderRadius: 50,
+                      }}
+                    />
+                  </ImageBackground>
+                  <View
+                    style={{
+                      flexDirection: "column",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      marginTop: 5,
+                    }}
+                  >
+                    <Text
+                      style={{
+                        color: "black",
+                        fontWeight: "bold",
+                        textAlign: "center",
+                      }}
+                    >
+                      {item.user_info?.name
+                        ? item.user_info?.name
+                        : item.sender_user_info[0]?.name
+                        ? item.sender_user_info[0]?.name
+                        : null}
+                    </Text>
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        marginTop: 2,
+                      }}
+                    >
+                      <Image
+                        source={coin}
+                        style={{ width: 20, height: 20, resizeMode: "contain" }}
+                      />
+                      <Text
+                        style={{
+                          color: "#1877F2",
+                          padding: 5,
+                          marginLeft: 5,
+                          fontWeight: "600",
+                        }}
+                      >
+                        {item?.totalCoin
+                          ? item?.totalCoin
+                          : item?.coin
+                          ? coin
+                          : null}
+                      </Text>
+                      <View style={styles.signalListView}>
+                        <Image
+                          style={[styles.photoView, { marginRight: wp(-2) }]}
+                          source={sild}
+                        />
+                        <Image style={[styles.photoView]} source={LevelDigit} />
+                      </View>
+                    </View>
+                  </View>
+                </View>
+              </View>
+            )}
+          </>
+        );
+      } else {
+        <View
+          style={{
+            height: hp(28),
+            flexDirection: "row",
+            width: wp(35),
+            alignItems: "flex-end",
+          }}
+        >
+          <View key={index} style={styles.highlightedPlayer}>
             <View
               style={{
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "center",
-                marginTop: 5,
+                padding: 10,
+                marginTop: -30,
               }}
             >
               <Text
@@ -167,99 +557,155 @@ const SendRanking = ({ navigation }) => {
                   color: "black",
                   fontWeight: "bold",
                   textAlign: "center",
+                  fontSize: hp(2.2),
                 }}
               >
-                {item.user_info?.name
-                  ? item.user_info?.name
-                  : item.sender_user_info[0]?.name
-                  ? item.sender_user_info[0]?.name
-                  : null}
+                {"1"}
               </Text>
-              <View
+              <ImageBackground
+                source={frame2}
                 style={{
-                  flexDirection: "row",
-                  justifyContent: "center",
+                  width: wp(33),
+                  height: hp(14),
                   alignItems: "center",
-                  marginTop: 2,
+                  justifyContent: "center",
                 }}
+                resizeMode="contain"
               >
                 <Image
-                  source={coin}
-                  style={{ width: 20, height: 20, resizeMode: "contain" }}
+                  source={
+                    item.user_info?.photo
+                      ? {
+                          uri: `http://13.233.229.68:8008/profile_images/${item.user_info?.photo}`,
+                        }
+                      : item?.sender_user_info != undefined
+                      ? {
+                          uri: `http://13.233.229.68:8008/profile_images/${item?.sender_user_info[0]?.photo} `,
+                        }
+                      : null
+                  }
+                  style={{
+                    width: 80,
+                    height: 80,
+                    resizeMode: "cover",
+                    marginTop: hp(4.4),
+                    borderRadius: 50,
+                  }}
                 />
+              </ImageBackground>
+              <View
+                style={{
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  marginTop: 5,
+                }}
+              >
                 <Text
                   style={{
-                    color: "#1877F2",
-                    padding: 5,
-                    marginLeft: 5,
-                    fontWeight: "600",
+                    color: "black",
+                    fontWeight: "bold",
+                    textAlign: "center",
                   }}
                 >
-                  {item?.totalCoin ? item?.totalCoin : item?.coin ? coin : null}
+                  {item.user_info?.name
+                    ? item.user_info?.name
+                    : item.sender_user_info[0]?.name
+                    ? item.sender_user_info[0]?.name
+                    : null}
                 </Text>
-                <View style={styles.signalListView}>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    marginTop: 2,
+                  }}
+                >
                   <Image
-                    style={[styles.photoView, { marginRight: wp(-2) }]}
-                    source={sild}
+                    source={coin}
+                    style={{ width: 20, height: 20, resizeMode: "contain" }}
                   />
-                  <Image style={[styles.photoView]} source={LevelDigit} />
+                  <Text
+                    style={{
+                      color: "#1877F2",
+                      padding: 5,
+                      marginLeft: 5,
+                      fontWeight: "600",
+                    }}
+                  >
+                    {item?.totalCoin
+                      ? item?.totalCoin
+                      : item?.coin
+                      ? coin
+                      : null}
+                  </Text>
+                  <View style={styles.signalListView}>
+                    <Image
+                      style={[styles.photoView, { marginRight: wp(-2) }]}
+                      source={sild}
+                    />
+                    <Image style={[styles.photoView]} source={LevelDigit} />
+                  </View>
                 </View>
               </View>
             </View>
           </View>
-        </View>
-      </View>
-    );
+        </View>;
+      }
+    }
   };
 
   const renderRow = ({ item, index }) => {
     const isEven = index % 2 === 0;
-    return (
-      <View
-        style={[styles.rowContainer, isEven ? styles.evenRow : styles.oddRow]}
-      >
-        <Text style={styles.rowIndex}>{index + 4}</Text>
-        <Image
-          source={
-            item.user_info?.photo
-              ? {
-                  uri: `http://13.233.229.68:8008/profile_images/${item.user_info?.photo}`,
-                }
-              : item.sender_user_info[0]?.photo
-              ? {
-                  uri: `http://13.233.229.68:8008/profile_images/${item.sender_user_info[0]?.photo}`,
-                }
-              : null
-          }
-          style={styles.rowImage}
-        />
-        <View style={styles.userInfoContainer}>
-          <Text style={styles.rowText}>
-            {item.user_info?.name
-              ? item.user_info?.name
-              : item.sender_user_info[0]?.name
-              ? item.sender_user_info[0]?.name
-              : null}
-          </Text>
-          <View style={styles.levelContainer}>
-            <Image
-              source={require("../../assets/sild.png")}
-              style={styles.levelImage}
-            />
-            <Image
-              style={styles.levelImage1}
-              source={require("../../assets/LevelDigit.png")}
-            />
+    if (index >= 3) {
+      return (
+        <View
+          style={[styles.rowContainer, isEven ? styles.evenRow : styles.oddRow]}
+        >
+          <Text style={styles.rowIndex}>{index + 4}</Text>
+          <Image
+            source={
+              item.user_info?.photo
+                ? {
+                    uri: `http://13.233.229.68:8008/profile_images/${item.user_info?.photo}`,
+                  }
+                : item?.sender_user_info != undefined
+                ? {
+                    uri: `http://13.233.229.68:8008/profile_images/${item?.sender_user_info[0]?.photo}`,
+                  }
+                : null
+            }
+            style={styles.rowImage}
+          />
+          <View style={styles.userInfoContainer}>
+            <Text style={styles.rowText}>
+              {item.user_info?.name
+                ? item.user_info?.name
+                : item.sender_user_info[0]?.name
+                ? item.sender_user_info[0]?.name
+                : null}
+            </Text>
+            <View style={styles.levelContainer}>
+              <Image
+                source={require("../../assets/sild.png")}
+                style={styles.levelImage}
+              />
+              <Image
+                style={styles.levelImage1}
+                source={require("../../assets/LevelDigit.png")}
+              />
+            </View>
+          </View>
+          <View style={styles.coinsContainer}>
+            <Image source={coin} style={styles.coinImage} />
+            <Text style={styles.rowText1}>
+              {item?.totalCoin ? item?.totalCoin : item?.coin ? coin : null}
+            </Text>
           </View>
         </View>
-        <View style={styles.coinsContainer}>
-          <Image source={coin} style={styles.coinImage} />
-          <Text style={styles.rowText1}>
-            {item?.totalCoin ? item?.totalCoin : item?.coin ? coin : null}
-          </Text>
-        </View>
-      </View>
-    );
+      );
+    }
   };
 
   return (
@@ -368,18 +814,21 @@ const SendRanking = ({ navigation }) => {
         <Weekly />
       </View>
 
-      <View style={{ height: hp(25) }}>
+      <View style={{ height: hp(28) }}>
         <FlatList
           data={
             activeIndex == 0
-              ? topsender
+              ? top3Sender
               : activeIndex == 1
-              ? topreciever
+              ? top3Reciever
               : rankingData
           }
           renderItem={ToprenderRow}
+          horizontal
+          // scrollEnabled={false}/
+          showsHorizontalScrollIndicator={false}
           keyExtractor={(item) => item._id}
-          showsVerticalScrollIndicator={false}
+          // showsVerticalScrollIndicator={false}
         />
       </View>
       <FlatList
@@ -527,7 +976,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   photoView: {
-    width: wp(7),
+    width: wp(5),
     height: hp(5),
     resizeMode: "contain",
   },

@@ -24,6 +24,7 @@ import store from "../../assets/store.png";
 import Logout from "../../assets/Logout.png";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
+  getEarningHistory,
   getFollowersApi,
   getFollowingApi,
   onGetUserApi,
@@ -96,6 +97,8 @@ const ProfileScreen = ({ navigation }) => {
   const [followers, setFollowers] = useState(0);
   const [following, setFollowing] = useState(0);
   const [countryName, setCountryName] = useState("IN");
+  const [Sender, setSender] = useState(0);
+  const [reciever, setReceiver] = useState(0);
 
   useEffect(() => {
     if (profileData?.country in countryCodes) {
@@ -112,7 +115,6 @@ const ProfileScreen = ({ navigation }) => {
   useEffect(() => {
     const subscribe = navigation.addListener("focus", () => {
       onGetUserData();
-      // onCountrySelect();
     });
   }, []);
 
@@ -161,6 +163,61 @@ const ProfileScreen = ({ navigation }) => {
       console.log("Error:", err);
     }
   };
+
+  const EarningHistory = async () => {
+    try {
+      const authToken = await AsyncStorage.getItem("token");
+      console.log("authToken", authToken);
+
+      var raw = JSON.stringify({
+        userId: authToken,
+        status: 1,
+      });
+
+      const response = await getEarningHistory(raw);
+
+      let totalSender = 0;
+
+      response.data.data.forEach((item) => {
+        totalSender += item.receiver?.length || 0;
+      });
+
+      setSender(totalSender);
+    } catch (error) {
+      console.error("Error in EarningHistory:", error);
+    }
+  };
+
+  const EarningHistory1 = async () => {
+    try {
+      const authToken = await AsyncStorage.getItem("token");
+      console.log("authToken", authToken);
+
+      var raw = JSON.stringify({
+        userId: authToken,
+        status: 2,
+      });
+
+      const response = await getEarningHistory(raw);
+
+      let totalSender = 0;
+
+      response.data.data.forEach((item) => {
+        totalSender += item.sender?.length || 0;
+      });
+
+      console.log("Total Sender Length:", totalSender);
+
+      setReceiver(totalSender);
+    } catch (error) {
+      console.error("Error in EarningHistory:", error);
+    }
+  };
+
+  useEffect(() => {
+    EarningHistory();
+    EarningHistory1();
+  }, []);
 
   const selectFile = async () => {
     if (Platform.OS == "ios") {
@@ -519,7 +576,7 @@ const ProfileScreen = ({ navigation }) => {
           }}
         >
           <Text style={{ fontSize: hp(2), color: "#fff", fontWeight: "700" }}>
-            0
+            {Sender}
           </Text>
           <Text style={{ fontSize: hp(2), color: "#fff", fontWeight: "700" }}>
             Send
@@ -538,7 +595,7 @@ const ProfileScreen = ({ navigation }) => {
           }}
         >
           <Text style={{ fontSize: hp(2), color: "#fff", fontWeight: "700" }}>
-            0
+            {reciever}
           </Text>
           <Text style={{ fontSize: hp(2), color: "#fff", fontWeight: "700" }}>
             Received

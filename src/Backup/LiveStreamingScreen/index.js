@@ -1,5 +1,5 @@
 import React,{useState,useEffect,useRef} from "react";
-import { View,Text,TouchableOpacity,Image,ImageBackground,StyleSheet,TextInput,ScrollView,PermissionsAndroid,Platform,findNodeHandle,Modal, FlatList,Alert, Share } from "react-native";
+import { View,Text,TouchableOpacity,Image,ImageBackground,StyleSheet,TextInput,ScrollView,PermissionsAndroid,Platform,findNodeHandle,Modal, FlatList,BackHandler,Alert, Share } from "react-native";
 import ArrowLeft from "../../assets/ArrowLeft.png";
 import CountryPicker from 'react-native-country-picker-modal'
 import {
@@ -837,7 +837,27 @@ const onGetCoHostAccept = async()=>{
       
 
 
-
+// useEffect(() => {
+//   if (isFocused && route?.name == 'LiveStreamingScreen') {
+//     const handleBackPress = () => {
+//       Alert.alert(
+//         'Live Streaming',
+//         'Are you sure you want to end live streaming?',
+//         [
+//           { text: 'No', onPress: () => { }, style: 'cancel' },
+//           { text: 'Yes', onPress: () => {route.params?.isHost?removeLiveStreaming():removeWatchingUser()} },
+//         ],
+//         { cancelable: false },
+//       );
+//       return true; // Prevent default behavior
+//     };
+    
+//     // BackHandler.addEventListener('hardwareBackPress', handleBackPress);
+//      return () => {
+//       BackHandler.removeEventListener("hardwareBackPress", handleBackPress);
+//     };
+//   }
+// }, [isFocused, route?.name]);
 
 const closePress = async () => {
   Alert.alert(
@@ -1064,11 +1084,19 @@ const onChattingAdd = async()=>{
     senderId:userData?._id,
     sender_name:userData?.name
   })
-  navigation.navigate('ChatScreen',{
-    rcvr: {id:item.id,receiver_id:profileData._id, name: profileData.name, profilePic:profileData?.photo},
-    rcvrpic: profileData?.photo,
-    user:{id:userData?._id,name:userData?.name}
+  .then((res)=>{
+    db.collection('rooms')
+    .doc(res.id)
+    .update({
+      id:res.id
+    })
+    navigation.navigate('ChatScreen',{
+      rcvr: {id:res.id,receiver_id:profileData._id, name: profileData.name, profilePic:profileData?.photo},
+      rcvrpic: profileData?.photo,
+      user:{id:userData?._id,name:userData?.name}
+    })
   })
+ 
 }
 
 
@@ -1170,8 +1198,8 @@ return(
         position: 'absolute',
         top: hp(28),
         right: wp(10),
-        width: '25%',
-        height: hp(18),
+        width: '28%',
+        height: hp(22),
         borderRadius: hp(1),
         backgroundColor: 'red',
       }}

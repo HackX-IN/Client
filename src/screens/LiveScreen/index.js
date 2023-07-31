@@ -34,15 +34,10 @@ const LiveScreen = ({ navigation, route }) => {
 
   useEffect(() => {
     // Fetch live streaming data whenever the screen is focused
-    onGetLiveData();
-  }, [isFocused]);
-
-  // useEffect(() => {
-  //   // Remove live streaming entries for the current user when the screen is focused
-  //   if (isFocused) {
-  //     removeLiveStreaming();
-  //   }
-  // }, [isFocused]);
+    const subscribe = navigation.addListener("focus", () => {
+      onGetLiveData();
+    });
+  }, []);
 
   const onGetLiveData = async () => {
     try {
@@ -50,13 +45,12 @@ const LiveScreen = ({ navigation, route }) => {
       const response = await onGetLiveStreamingApi();
       let data = response.data.data;
       response.data.data.forEach(async (item) => {
-        console.log("Get Darta::",item?.userId ,authToken)
+        console.log("Get Darta::", item?.userId, authToken);
         if (item?.userId === authToken) {
           const deletePromise = await onDeleteLiveStreamingApi(item?._id);
-          console.log("Get Darta::",deletePromise)
+          console.log("Get Darta::", deletePromise);
         }
       });
-
     } catch (err) {
       console.log("Error:", err);
     }
@@ -64,10 +58,8 @@ const LiveScreen = ({ navigation, route }) => {
 
   // const removeLiveStreaming = async () => {
   //   try {
-     
-  //     const deletePromises = [];
 
-    
+  //     const deletePromises = [];
 
   //     // Wait for all deletePromises to complete before continuing
   //     await Promise.all(deletePromises);

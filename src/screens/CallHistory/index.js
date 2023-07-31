@@ -15,10 +15,11 @@ import {
   heightPercentageToDP as hp,
 } from "../../components/Pixel/index";
 import leftArrows from "../../assets/leftArrows.png";
-import { onGetEaringCoinApi } from "../../services/Api.js";
+import { onGetEaringCoinApi, getEarningHistory } from "../../services/Api.js";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import coin from "../../assets/coin.png";
 import viewer from "../../assets/viewer.png";
+import moment from "moment";
 
 const livePhoto = [
   {
@@ -46,23 +47,55 @@ const CallHistory = ({ navigation }) => {
   randomUserID = String(Math.floor(Math.random() * 100000));
   const [coinData, setCoinData] = useState([]);
 
-  useEffect(() => {
-    const subscribe = navigation.addListener("focus", () => {
-      onGetCoinData();
-    });
-  }, []);
+  // useEffect(() => {
+  //   const subscribe = navigation.addListener("focus", () => {
+  //     onGetCoinData();
+  //   });
+  // }, []);
 
-  const onGetCoinData = async () => {
+  // const onGetCoinData = async () => {
+  //   try {
+  //     const response = await onGetEaringCoinApi();
+
+  //     console.log("Get Response>>>", response.data.data);
+  //     setCoinData(response.data.data);
+  //   } catch (err) {
+  //     console.log("get error", err);
+  //     // Handle the error gracefully if needed
+  //   }
+  // };
+
+  const EarningHistory = async () => {
     try {
-      const response = await onGetEaringCoinApi();
+      const authToken = await AsyncStorage.getItem("token");
+      console.log("authToken", authToken);
 
-      console.log("Get Response>>>", response.data.data);
-      setCoinData(response.data.data);
-    } catch (err) {
-      console.log("get error", err);
-      // Handle the error gracefully if needed
+      var raw = JSON.stringify({
+        userId: authToken,
+        status: 1,
+      });
+
+      const response = await getEarningHistory(raw);
+
+      var raw1 = JSON.stringify({
+        userId: authToken,
+        status: 2,
+      });
+
+      const response1 = await getEarningHistory(raw1);
+
+      console.log("Response Earning", {
+        ...response.data.data,
+        ...response1.data.data,
+      });
+      setCoinData([...response.data.data, ...response1.data.data]);
+    } catch (error) {
+      console.error("Error in EarningHistory:", error);
     }
   };
+  useEffect(() => {
+    EarningHistory();
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -115,7 +148,7 @@ const CallHistory = ({ navigation }) => {
                       }}
                     >
                       <Text style={{ fontSize: hp(2), color: "#fff" }}>
-                        {item?.date}
+                        {moment(item?.createdAt).format("DD MMM, YYYY")}
                       </Text>
                     </View>
                   </View>
