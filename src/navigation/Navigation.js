@@ -37,6 +37,7 @@ import LiveCoinScreen from "../screens/LiveCoinScreen";
 import SearchProfile from "../screens/SearchProfileScreen";
 import SplashScreen from "../screens/SplashScreen";
 import MyPost from "../screens/MyPostScreen";
+import SystemMessage from "../screens/SystemMessage";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -284,6 +285,11 @@ const navigation = () => {
         <Stack.Screen
           name="MyPost"
           component={MyPost}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="SystemMessage"
+          component={SystemMessage}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

@@ -663,7 +663,7 @@ const SendRanking = ({ navigation }) => {
         <View
           style={[styles.rowContainer, isEven ? styles.evenRow : styles.oddRow]}
         >
-          <Text style={styles.rowIndex}>{index + 4}</Text>
+          <Text style={styles.rowIndex}>{index + 1}</Text>
           <Image
             source={
               item.user_info?.photo

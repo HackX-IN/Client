@@ -983,6 +983,24 @@ export const onGetOtherUserApi = async (id) => {
   });
 };
 
+export const onGetNotification = async (responseData) => {
+  const url = Api.baseUrl + `notification/get`;
+  return new Promise((resolve, reject) => {
+    axios
+      .post(url, responseData, {
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+      })
+      .then((res) => {
+        return resolve(res);
+      })
+      .catch((err) => {
+        return reject(err);
+      });
+  });
+};
 export const OnDeletePost = async (id) => {
   const url = Api.baseUrl + `user/post/delete/${id}`;
 
@@ -992,7 +1010,7 @@ export const OnDeletePost = async (id) => {
     return response;
   } catch (error) {
     console.log("::err in deleting post::", error);
-    throw error; 
+    throw error;
   }
 };
 
@@ -1011,9 +1029,3 @@ export const AddgiftNotifications = async (responseData) => {
     throw new Error("Error in Notifications:", error);
   }
 };
-
-
-
-
-
-
