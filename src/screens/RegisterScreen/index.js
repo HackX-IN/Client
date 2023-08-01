@@ -96,6 +96,7 @@ const RegisterScreen = ({ navigation }) => {
           dob: dateFormat,
           gender: gender == "Male" ? 1 : 2,
           country: countryCode,
+          email: email,
         });
 
         const response = await RegistrationScreenApi(raw);
@@ -307,14 +308,14 @@ const RegisterScreen = ({ navigation }) => {
                 style={styles.textInputStyle}
               />
             </View>
-            {/* <Text style={styles.phoneNumberText}>Email Address</Text>
+            <Text style={styles.phoneNumberText}>Email Address</Text>
                 <View style={styles.loginButton1}>
                 <TextInput
                 value={email}
                 onChangeText={(value)=>{setEmail(value)}}
                 style={styles.textInputStyle}
                 />
-                </View> */}
+                </View>
 
             <Text style={styles.phoneNumberText}>Mobile Number</Text>
             {/* <View style={styles.loginButton1}>

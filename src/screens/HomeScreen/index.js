@@ -392,6 +392,7 @@ const HomeScreen = ({ navigation, route }) => {
       >
         {showInput ? (
           <>
+          {userList!=null?
             <TouchableOpacity
               onPress={() =>
                 navigation.navigate("SearchProfile", { userList: userList })
@@ -445,6 +446,7 @@ const HomeScreen = ({ navigation, route }) => {
                 ) : null}
               </View>
             </TouchableOpacity>
+:null}
           </>
         ) : (
           <>

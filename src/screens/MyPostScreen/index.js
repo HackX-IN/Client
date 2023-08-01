@@ -13,6 +13,7 @@ import {
   onAddCommentApi,
   onAddLikeApi,
   onRemoveLikeApi,
+  OnDeletePost,
 } from "../../services/Api.js";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import CommentPopup from "../../components/CommentPopup.js";
@@ -92,6 +93,17 @@ const MyPostScreen = ({ navigation }) => {
     }
   };
 
+  const onDeletePost = async (postId) => {
+    try {
+      const response=await OnDeletePost(postId);
+      console.log(response.data)
+      getPostData(userId);
+     
+    } catch (err) {
+      console.log("Error:", err);
+    }
+  };
+
   const onLikeSend = async (from, index) => {
     try {
       var raw = JSON.stringify({
@@ -118,21 +130,7 @@ const MyPostScreen = ({ navigation }) => {
     }
   };
 
-  const addComment = async (from, index, comment) => {
-    try {
-      var raw = JSON.stringify({
-        userId: userId,
-        postId: from._id,
-        comment: comment,
-      });
-      const response = await onAddCommentApi(raw);
-      setRefresh(!refresh);
-      from.commentInput = "";
-      getPostData(userId);
-    } catch (err) {
-      console.log("Error:", err);
-    }
-  };
+  
   const renderItem = ({ item, index }) => {
     console.log("Get Post ITem:::", item?.caption);
     if (item?.likes?.length > 0) {
@@ -261,6 +259,7 @@ const MyPostScreen = ({ navigation }) => {
               width: "60%",
             }}
           >
+         
             {/* <TouchableOpacity style={{alignItems:'center',
               justifyContent:'center',}}>
             <Image
@@ -325,6 +324,24 @@ const MyPostScreen = ({ navigation }) => {
                 {item?.likes?.length}
               </Text>
             </TouchableOpacity>
+            {item.userId === userId && (
+              <TouchableOpacity
+                style={{
+                  width: wp(8),
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+                onPress={() => onDeletePost(item._id)}
+              >
+              <Image
+              style={[
+                styles.sendIcon1,
+               
+              ]}
+              source={require('../../assets/delete.png')}
+            />
+              </TouchableOpacity>
+            )}
           </View>
         </View>
       </View>
@@ -456,6 +473,11 @@ const styles = StyleSheet.create({
   sendIcon: {
     width: wp(6),
     height: hp(3),
+    resizeMode: "contain",
+  },
+  sendIcon1: {
+    width: wp(7),
+    height: hp(4),
     resizeMode: "contain",
   },
 });

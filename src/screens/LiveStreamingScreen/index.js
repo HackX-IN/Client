@@ -48,6 +48,7 @@ import {
   FollowUserApi,
   getFollowersApi,
   getFollowingApi,
+  AddgiftNotifications,
 } from "../../services/Api.js";
 import image1 from "../../assets/image1.png";
 import adminPanel from "../../assets/adminPanel.png";
@@ -327,16 +328,6 @@ const LiveStreamingScreen = ({ navigation, route, props }) => {
     });
   });
 
-  const onGetUserData1 = async () => {
-    try {
-      const response = await onGetUserApi();
-      console.log("Get Response", response.data.data[0]);
-      onGetStoreData(response.data.data[0]);
-    } catch (err) {
-      console.log("Error:", err);
-    }
-  };
-
   const onGetStoreData = async (from) => {
     try {
       const response = await onGetStoreItemsApi();
@@ -410,7 +401,7 @@ const LiveStreamingScreen = ({ navigation, route, props }) => {
     setIsHost(route.params.isHost);
     init();
     onGetUserData();
-
+    console.log(UserData?.name);
     setArrayCoin(giftArray);
     setArrayCount(countArray);
   }, []);
@@ -500,9 +491,25 @@ const LiveStreamingScreen = ({ navigation, route, props }) => {
     setArrayCoin(arrayList);
   };
 
+  const AddNotifications = async () => {
+    try {
+      const authToken = await AsyncStorage.getItem("token");
+
+      var raw = JSON.stringify({
+        to: route.params.receiverId,
+        from: authToken,
+        title: "gift Send",
+        body: `${UserData?.name} Sends ${selectCoin * count}`,
+      });
+      const response = await AddgiftNotifications(raw);
+      console.log("Response Live Streaming", response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <View style={styles.container}>
-      
       <View style={styles.container1}>
         <ZegoUIKitPrebuiltLiveStreaming
           ref={prebuiltRef}
@@ -1038,7 +1045,10 @@ const LiveStreamingScreen = ({ navigation, route, props }) => {
                     alignItems: "center",
                     justifyContent: "center",
                   }}
-                  onPress={() => onSendCoin()}
+                  onPress={() => {
+                    onSendCoin();
+                    AddNotifications();
+                  }}
                 >
                   <Text
                     style={{

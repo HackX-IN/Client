@@ -33,6 +33,7 @@ import {
 } from "../../services/Api.js";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import CommentPopup from "../../components/CommentPopup.js";
+import moment from "moment";
 
 const postArray = [
   {
@@ -230,12 +231,16 @@ const WalletScreen = ({ navigation }) => {
               {item.userDetails ? (
                 <Text style={styles.nameText}>{item.userDetails[0]?.name}</Text>
               ) : null}
-              <Text style={styles.nameText1} numberOfLines={2}>
-                {item?.caption}
+               <Text style={styles.nameText2} numberOfLines={2}>
+                {moment(item?.createdAt).format('DD MMM')}
               </Text>
             </View>
           </View>
+          
         </View>
+        <Text style={styles.nameText1} numberOfLines={2}>
+                {item?.caption}
+              </Text>
         <Swiper
           style={styles.wrapper}
           key={item?.comments?.length}
@@ -535,7 +540,14 @@ const styles = StyleSheet.create({
     fontWeight: "700",
   },
   nameText1: {
-    fontSize: hp(1.4),
+    fontSize: hp(1.7),
+    color: "#fff",
+    fontWeight: "400",marginLeft:wp(2),
+    marginBottom:hp(1)
+  },
+
+  nameText2: {
+    fontSize: hp(1.5),
     color: "#fff",
     fontWeight: "400",
   },

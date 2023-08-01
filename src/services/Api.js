@@ -982,3 +982,38 @@ export const onGetOtherUserApi = async (id) => {
       .catch((err) => reject(err));
   });
 };
+
+export const OnDeletePost = async (id) => {
+  const url = Api.baseUrl + `user/post/delete/${id}`;
+
+  try {
+    const response = await axios.delete(url);
+    console.log("::res::", response);
+    return response;
+  } catch (error) {
+    console.log("::err in deleting post::", error);
+    throw error; 
+  }
+};
+
+export const AddgiftNotifications = async (responseData) => {
+  const url = Api.baseUrl + `notification/add`;
+
+  try {
+    const response = await axios.post(url, responseData, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    return response;
+  } catch (error) {
+    throw new Error("Error in Notifications:", error);
+  }
+};
+
+
+
+
+
+

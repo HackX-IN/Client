@@ -220,7 +220,7 @@ const Index = ({ route, navigation }) => {
   }, [profileData]);
 
   return (
-    <View style={{ flex: 1, alignItems: "center", backgroundColor: "#F7F9F8" }}>
+    <View style={{ flex: 1, alignItems: "center", backgroundColor: "#0371FF" }}>
       <View
         style={{
           flexDirection: "row",
@@ -236,7 +236,7 @@ const Index = ({ route, navigation }) => {
               width: widthPercentageToDP(6),
               height: heightPercentageToDP(2),
               resizeMode: "contain",
-              tintColor: "#0371FF",
+              tintColor: "#F7F9F8",
             }}
             source={leftArrows}
           />
@@ -245,7 +245,7 @@ const Index = ({ route, navigation }) => {
           style={{
             fontSize: 20,
             fontWeight: "bold",
-            color: "#0371FF",
+            color: "#F7F9F8",
             textAlign: "center",
           }}
         >
@@ -265,7 +265,7 @@ const Index = ({ route, navigation }) => {
       <View
         style={{
           borderBottomWidth: 1.3,
-          borderColor: "#0371FF",
+          borderColor: "#F7F9F8",
           height: 5,
           width: widthPercentageToDP(100),
           marginTop: widthPercentageToDP(2),
@@ -312,7 +312,7 @@ const Index = ({ route, navigation }) => {
             style={{
               fontSize: 20,
               fontWeight: "bold",
-              color: "black",
+              color: "#fff",
               marginRight: widthPercentageToDP(3.5),
             }}
           >
@@ -333,7 +333,7 @@ const Index = ({ route, navigation }) => {
           style={{
             fontSize: heightPercentageToDP(1.3),
             fontWeight: "bold",
-            color: "#0371FF",
+            color: "#F7F9F8",
             textAlign: "center",
             width: widthPercentageToDP(50),
           }}
@@ -344,7 +344,7 @@ const Index = ({ route, navigation }) => {
           style={{
             fontSize: heightPercentageToDP(1.3),
             fontWeight: "bold",
-            color: "gray",
+            color: "#fff",
             marginTop: widthPercentageToDP(1.8),
           }}
         >
@@ -355,7 +355,7 @@ const Index = ({ route, navigation }) => {
             width: "90%",
             alignSelf: "center",
             borderWidth: 1,
-            borderColor: "#0371FF",
+            borderColor: "#F7F9F8",
             height: heightPercentageToDP(8),
             borderRadius: 10,
             flexDirection: "row",
@@ -378,7 +378,7 @@ const Index = ({ route, navigation }) => {
             <Text
               style={{
                 fontSize: heightPercentageToDP(2),
-                color: "#000",
+                color: "#fff",
                 fontWeight: "700",
               }}
             >
@@ -387,7 +387,7 @@ const Index = ({ route, navigation }) => {
             <Text
               style={{
                 fontSize: heightPercentageToDP(2),
-                color: "#000",
+                color: "#fff",
                 fontWeight: "700",
               }}
             >
@@ -409,7 +409,7 @@ const Index = ({ route, navigation }) => {
             <Text
               style={{
                 fontSize: heightPercentageToDP(2),
-                color: "#000",
+                color: "#fff",
                 fontWeight: "700",
               }}
             >
@@ -418,7 +418,7 @@ const Index = ({ route, navigation }) => {
             <Text
               style={{
                 fontSize: heightPercentageToDP(2),
-                color: "#000",
+                color: "#fff",
                 fontWeight: "700",
               }}
             >
@@ -439,7 +439,7 @@ const Index = ({ route, navigation }) => {
             <Text
               style={{
                 fontSize: heightPercentageToDP(2),
-                color: "#000",
+                color: "#fff",
                 fontWeight: "700",
               }}
             >
@@ -448,7 +448,7 @@ const Index = ({ route, navigation }) => {
             <Text
               style={{
                 fontSize: heightPercentageToDP(2),
-                color: "#000",
+                color: "#fff",
                 fontWeight: "700",
               }}
             >
@@ -470,7 +470,7 @@ const Index = ({ route, navigation }) => {
             <Text
               style={{
                 fontSize: heightPercentageToDP(2),
-                color: "#000",
+                color: "#fff",
                 fontWeight: "700",
               }}
             >
@@ -479,7 +479,7 @@ const Index = ({ route, navigation }) => {
             <Text
               style={{
                 fontSize: heightPercentageToDP(2),
-                color: "#000",
+                color: "#fff",
                 fontWeight: "700",
               }}
             >
@@ -500,7 +500,7 @@ const Index = ({ route, navigation }) => {
         <TouchableOpacity
           onPress={followed ? unFollowUser : followUser}
           style={{
-            backgroundColor: "#0371FF",
+            backgroundColor: "white",
             borderRadius: widthPercentageToDP(5),
             padding: widthPercentageToDP(2),
             width: widthPercentageToDP(35),
@@ -510,7 +510,7 @@ const Index = ({ route, navigation }) => {
             style={{
               fontSize: heightPercentageToDP(1.5),
               fontWeight: "bold",
-              color: "white",
+              color: "#0371FF",
               textAlign: "center",
             }}
           >
@@ -524,7 +524,7 @@ const Index = ({ route, navigation }) => {
             padding: widthPercentageToDP(2),
             width: widthPercentageToDP(35),
             borderWidth: 1,
-            borderColor: "#0371FF",
+            borderColor: "#F7F9F8",
           }}
           onPress={onChattingAdd}
         >
